@@ -91,17 +91,6 @@ solution_area_server<-function(input, output,session){
     )
   })
   
-  data_select_path <- reactive({
-    path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
-      select(projectData) 
-    fromJSON(txt = sprintf("%s",path_json), simplifyDataFrame = TRUE)
-  })
-  
-  data_select_title <- reactive({
-    path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
-      select(projectName) 
-  })
-  
   load_from_projects(input, output, session)
  
   
@@ -109,6 +98,17 @@ solution_area_server<-function(input, output,session){
 
 load_from_projects <- function(input, output, session){
   observeEvent(input$load_project,{
+    
+    data_select_path <- reactive({
+      path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
+        select(projectData) 
+      fromJSON(txt = sprintf("%s",path_json), simplifyDataFrame = TRUE)
+    })
+    
+    data_select_title <- reactive({
+      path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
+        select(projectName) 
+    })
     
     if(ID_GLOBAL_PROJECT == ""){
       sendSweetAlert(
@@ -127,6 +127,8 @@ load_from_projects <- function(input, output, session){
         html = TRUE
       )
     }else{
+      assign("DATA_GLOBAL_PROJECT", data_select_path(), envir = .GlobalEnv )
+      
       output$data_title <- renderUI({
         req(data_select_title())
         
@@ -136,9 +138,7 @@ load_from_projects <- function(input, output, session){
       })
       
       output$data_from<-DT::renderDT({
-        req(data_select_path())
-        
-        data_select_path() %>%
+        DATA_GLOBAL_PROJECT %>%
           DT::datatable(
             extensions = "Scroller",
             editable = "cell",
@@ -149,9 +149,30 @@ load_from_projects <- function(input, output, session){
           )
       }) 
       
-      # observeEvent(input$data_from_csv{
-      #   
-      # })
+      proxyData = dataTableProxy('data_from')
+      observeEvent(input$data_from_cell_edit,{
+        info = input$data_from_cell_edit
+        i = info$row
+        j = info$col + 1
+        v = info$value
+        DATA_GLOBAL_PROJECT[i, j] <<- DT::coerceValue(v, DATA_GLOBAL_PROJECT[i, j])
+        replaceData(proxyData, DATA_GLOBAL_PROJECT, resetPaging = FALSE)
+        
+        
+        output$data_from<-DT::renderDT({
+          DATA_GLOBAL_PROJECT %>%
+            DT::datatable(
+              extensions = "Scroller",
+              editable = "cell",
+              options = list(responsive = TRUE, scrollY = 325, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
+              selection = list(mode = "single"),
+              class = "display compact",
+              rownames = FALSE
+            )
+        })
+        
+      })
+      
     }
   })
 }
