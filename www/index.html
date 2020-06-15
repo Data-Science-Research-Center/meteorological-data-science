@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Cristian Pazmiño" />
+    <meta name="description" content="CIDED web application for meteorological data analysis" />
+    <meta name="keywords" content="METDATA,CIDED,R,Shiny,Meteorological data" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximun-scale=1.0, minimum-scale=1.0">
+    <title>Meteorological Data Science</title>
+
+    {{ headContent()  }}
+
+    <link rel="shortcut icon" type="image/x-icon" href="images/atomo-cided.ico" />
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/themify-icons.css">
+    <link rel="stylesheet" href="css/icomoon-icons.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/animate.css">
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/modernizr-2.8.3.min.js"></script>
+
+</head>
+
+<body data-spy="scroll" data-target="#primary-menu">
+    <div class="mainmenu-area" data-spy="affix" data-offset-top="100">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="http://cided.espoch.edu.ec/" target="_blank" class="navbar-brand logo">
+                    <h5>Data Science <br> Research Group</h5>
+                </a>
+            </div>
+            <nav class="collapse navbar-collapse" id="primary-menu">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#home-page">Home</a></li>
+                    <li><a href="#explorer_area">Explorer</a></li>
+                    <!--<li><a href="#featured-pkgs">Featured</a></li>-->
+                    <li><a href="#solution_area">Solutions</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <header class="header-area  full-height relative v-center sky-bg-other" id="home-page">
+        <div class="absolute anlge-bg"></div>
+        <div class="container">
+            <div class="row v-center">
+                <div class="col-xs-12 col-md-7 header-text">
+                    <h2>Meteorological Data Science</h2>
+                    <p>
+                        informacion sobre algo
+                    </p>
+                    {{ header_area }}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="section-padding sky-bg-other" id="explorer_area">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <div class="page-title">
+                        <h2>Explorer</h2>
+                        <p>info about projects</p>
+                    </div>
+                </div>
+            </div>
+            {{ explorer_area}}
+        </div>
+    </section>
+
+    <section class="section-padding sky-bg " id="solution_area">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <div class="page-title">
+                        <h2>Solutions</h2>
+                        <p>Select a package L</p>
+                    </div>
+                </div>
+            </div>
+            {{ solution_area}}
+        </div>
+    </section>
+
+    <footer class="footer-area relative sky-bg-other" id="about">
+        <div class="absolute footer-bg"></div>
+        <div class="footer-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 text-center">
+                        <div class="page-title">
+                            <h2>About this app</h2>
+                            <p style="text-align: left">
+                                The goal of this app is to demonstrate the development of a complete data service entirely written in the statistical programming language R. Besides this web application, the project includes the creation of a data refresh process (also written in R) that runs inside an AWS Docker container on a daily schedule. Additionally, efforts were made to develop this project in a reproducible way by controlling the operating environmentand the used R version (through Docker containers), a complete list of all required R packages and their specific versions (through <verbatim>packrat</verbatim>) with the intention to promote collaborative development and to reduce the friction of the setup process of R projects in heterogeneous development environments.
+                            </p>
+
+                            <h3>App</h3>
+                            <p style="text-align: left">
+                                This web application is written using the <a href="https://shiny.rstudio.com/" target="_blank">R Shiny</a> web framework. It demonstrates the use of custom HTML templates in Shiny apps to create a fancy user experience. The theme used in this app is made by <a href="https://colorlib.com">Colorlib</a>. The was developed with best Shiny practices in mind, e.g. the use of Shiny modu les. In total about 1,100 lines of code were written for this app in less than 80 hours. This time included app ideation and all required research of data sources, data preparation and its operationalisation, app development, design and how to best present the information.
+                            </p>
+
+                            <h3>Data</h3>
+                            <p style="text-align: left">
+                                The data for this app is extracted from <a href="https://www.r-pkg.org/" target="_blank">MetaCRAN</a> which provides a database of all packages on CRAN and their publication history. The extraction processes transforms and summarises the data for efficient consumption in this app. The app's data is refreshed through a separate R process which runs daily in a Docker container on AWS. The data refresh is published in its own git repository (to be published soon).
+                            </p>
+
+                            <h3>Deployment</h3>
+                            <p style="text-align: left">
+                                The app is deployed through RStudio's webservice <a href="https://shinyapps.io/" target="_blank">shinyapps.io</a>. Additionally, the app is published on <a href="https://rstudio.cloud/project/258634" target="_blank">RStudio Cloud</a> which provides a complete development environment of the project.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-middle">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 pull-right">
+                        <ul class="social-menu text-right x-left">
+                            <!--li><a href="#"><i class="ti-facebook"></i></a></li>
+                            <li><a href="#"><i class="ti-twitter"></i></a></li>
+                            <li><a href="#"><i class="ti-google"></i></a></li-->
+                            <li><a href="https://gitlab.com/crpazminos/cided-data-science" target="_blank"><span class="icon-gitlab"></span> </a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <p>
+                            This app is open source and its code can be used freely.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <p>This template is made with <i class="ti-heart" aria-hidden="true"></i> by <a href="#">name</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquey.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/contact-form.js"></script>
+    <script src="js/jquery.parallax-1.1.3.js"></script>
+    <script src="js/scrollUp.min.js"></script>
+    <script src="js/magnific-popup.min.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.sparkline/2.1.2/jquery.sparkline.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
