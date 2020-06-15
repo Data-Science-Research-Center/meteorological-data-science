@@ -148,32 +148,18 @@ load_from_projects <- function(input, output, session){
             rownames = FALSE
           )
       }) 
-      
-      proxyData = dataTableProxy('data_from')
-      observeEvent(input$data_from_cell_edit,{
-        info = input$data_from_cell_edit
-        i = info$row
-        j = info$col + 1
-        v = info$value
-        DATA_GLOBAL_PROJECT[i, j] <<- DT::coerceValue(v, DATA_GLOBAL_PROJECT[i, j])
-        replaceData(proxyData, DATA_GLOBAL_PROJECT, resetPaging = FALSE)
-        
-        
-        output$data_from<-DT::renderDT({
-          DATA_GLOBAL_PROJECT %>%
-            DT::datatable(
-              extensions = "Scroller",
-              editable = "cell",
-              options = list(responsive = TRUE, scrollY = 325, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
-              selection = list(mode = "single"),
-              class = "display compact",
-              rownames = FALSE
-            )
-        })
-        
-      })
-      
     }
+    
+    proxyData = dataTableProxy('data_from')
+    observeEvent(input$data_from_cell_edit,{
+      info = input$data_from_cell_edit
+      i = info$row
+      j = info$col + 1
+      v = info$value
+      DATA_GLOBAL_PROJECT[i, j] <<- DT::coerceValue(v, DATA_GLOBAL_PROJECT[i, j])
+      replaceData(proxyData, DATA_GLOBAL_PROJECT, resetPaging = FALSE, rownames = FALSE)
+    })
+    
   })
 }
 
