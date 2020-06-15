@@ -91,6 +91,17 @@ solution_area_server<-function(input, output,session){
     )
   })
   
+  data_select_path <- reactive({
+    path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
+      select(projectData) 
+    fromJSON(txt = sprintf("%s",path_json), simplifyDataFrame = TRUE)
+  })
+  
+  data_select_title <- reactive({
+    path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
+      select(projectName) 
+  })
+  
   load_from_projects(input, output, session)
  
   
@@ -98,17 +109,6 @@ solution_area_server<-function(input, output,session){
 
 load_from_projects <- function(input, output, session){
   observeEvent(input$load_project,{
-    
-    data_select_path <- reactive({
-      path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
-        select(projectData) 
-      fromJSON(txt = sprintf("%s",path_json), simplifyDataFrame = TRUE)
-    })
-    
-    data_select_title <- reactive({
-      path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
-        select(projectName) 
-    })
     
     if(ID_GLOBAL_PROJECT == ""){
       sendSweetAlert(
