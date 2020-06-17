@@ -5,8 +5,7 @@
 # Created: 2020-05-13 12:24:40
 ##############################################################################################################
 
-
-# UI of the module -------------------------------------------------------------------------------------------
+# Header area UI -----
 header_area_ui<-function(id){
   ns <- NS(id)
   fluidRow(
@@ -14,9 +13,7 @@ header_area_ui<-function(id){
   )
 }
 
-
-
-# Server logic of the module ---------------------------------------------------------------------------------
+# Header area SERVER -----
 header_area_server<-function(input, output, session){
   ns <- session$ns
 }

@@ -1,3 +1,11 @@
+################################################################################
+# Module explorer area
+#
+# Author: Cristian Pazmiño
+# Created: 2020-04-16 10:23:25
+################################################################################
+
+# Explorer area UI -----
 explorer_area_ui <- function(id) {
   ns <- NS(id)
   material_card(
@@ -47,6 +55,7 @@ explorer_area_ui <- function(id) {
   )
 }
 
+# Explorer area SERVER -----
 explorer_area_server<- function(input, output, session) {
   ns <- session$ns
 
@@ -381,7 +390,7 @@ explorer_area_server<- function(input, output, session) {
     })
     
     if(text_result == "Successfully edited"){
-      assign("ID_GLOBAL_PROJECT", id_project, envir = .GlobalEnv )
+      assign("ID_GLOBAL_PROJECT", id_project, envir = .GlobalEnv)
     }
 
   })

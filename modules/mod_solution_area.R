@@ -1,3 +1,11 @@
+################################################################################
+# Module solution area
+#
+# Author: Cristian Pazmiño
+# Created: 2020-04-20 16:43:05
+################################################################################
+
+# Solution area UI -----
 solution_area_ui<-function(id){
   ns <- NS(id)
   
@@ -37,7 +45,8 @@ solution_area_ui<-function(id){
                     fileInput(
                       inputId = ns("file_input_csv"),
                       label = NULL,
-                      buttonLabel = span(class="ti-file", style = "font-size:22pt") 
+                      buttonLabel = span(class="ti-file", style = "font-size:22pt"),
+                      accept = c("text/csv","text/comma-separated-values","text/plain",".csv")
                     ),
                     actionBttn(
                       ns("load_csv"), 
@@ -82,6 +91,7 @@ solution_area_ui<-function(id){
   )
 }
 
+# Solution area SERVER -----
 solution_area_server<-function(input, output,session){
   ns <- session$ns
   
@@ -93,7 +103,7 @@ solution_area_server<-function(input, output,session){
   
   load_from_projects(input, output, session)
  
-  
+  load_from_scv(input, output, session)
 }
 
 load_from_projects <- function(input, output, session){
@@ -101,13 +111,13 @@ load_from_projects <- function(input, output, session){
     
     data_select_path <- reactive({
       path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
-        select(projectData) 
+        select(projectData)
       fromJSON(txt = sprintf("%s",path_json), simplifyDataFrame = TRUE)
     })
-    
+
     data_select_title <- reactive({
       path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
-        select(projectName) 
+        select(projectName)
     })
     
     if(ID_GLOBAL_PROJECT == ""){
@@ -163,6 +173,48 @@ load_from_projects <- function(input, output, session){
   })
 }
 
-load_from_scv <- function(input, output,session){
+load_from_scv <- function(input, output, session){
   
+  observeEvent(input$load_csv,{
+    
+    if(is.null(input$file_input_csv)){
+      sendSweetAlert(
+        session = session,
+        title = NULL,
+        width = 300,
+        showCloseButton = TRUE,
+        btn_labels = NA,
+        text = fluidRow(
+          column(
+            width = 12,
+            br(),
+            p("texto no a seleccionado proyecto")
+          )
+        ),
+        html = TRUE
+      )
+    }else{
+      # data_read <- eventReactive(input$file_input_csv, {
+      #   read.csv(input$file_input_csv$datapath)
+      # })
+      data_read <- read.csv(input$file_input_csv$datapath)
+      
+      output$data_from<-DT::renderDT({
+        # req(data_read())
+        
+        data_read %>%
+          DT::datatable(
+            extensions = "Scroller",
+            editable = "cell",
+            options = list(responsive = TRUE, scrollY = 325, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
+            selection = list(mode = "single"),
+            class = "display compact",
+            rownames = FALSE
+          )
+      }) 
+    }
+    
+   
+    
+  })
 }

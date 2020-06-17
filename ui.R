@@ -1,3 +1,10 @@
+################################################################################
+# UI of the app
+#
+# Author: Cristian Pazmiño
+# Created: 2020-04-06 09:54:47
+################################################################################
+
 htmlTemplate(
   filename = "www/index.html",
   header_area = header_area_ui("header_area"),
