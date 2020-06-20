@@ -17,6 +17,8 @@ library(shinycssloaders)
 library(highcharter)
 library(dplyr)
 library(rsconnect)
+library(tools)
+library(xfun)
 
 # Load modules -----
 source("modules/mod_header_area.R")

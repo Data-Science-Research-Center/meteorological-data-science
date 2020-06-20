@@ -392,7 +392,8 @@ explorer_area_server<- function(input, output, session) {
     if(text_result == "Successfully edited"){
       assign("ID_GLOBAL_PROJECT", id_project, envir = .GlobalEnv)
     }
-
+    
+    
   })
   
 }

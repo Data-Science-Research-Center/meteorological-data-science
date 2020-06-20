@@ -67,14 +67,25 @@ solution_area_ui<-function(id){
             column(
               width = 9,
               material_card(
-                style = "background:#ffffff; height:480px; color:#272829",
+                style = "background:#ffffff; height:520px; color:#272829",
                 div(
                   style = "margin-bottom: 20px",
-                  uiOutput(ns("data_title"))
+                  fluidRow(
+                    column(
+                      width = 11,
+                      style = "background: red",
+                      uiOutput(ns("data_title"))
+                    ),
+                    column(
+                      width = 1,
+                      style = "background: blue",
+                      uiOutput(ns("data_config"))
+                    )
+                  )
                 ),
                 div(
-                  DT::DTOutput(ns("data_from")),
-                  style = "font-size: 8.5pt;"
+                  style = "font-size: 8.5pt;",
+                  DT::DTOutput(ns("data_from"))
                 )
               )
             )
@@ -106,6 +117,7 @@ solution_area_server<-function(input, output,session){
   load_from_scv(input, output, session)
 }
 
+# Load data from projects -----
 load_from_projects <- function(input, output, session){
   observeEvent(input$load_project,{
     
@@ -152,12 +164,12 @@ load_from_projects <- function(input, output, session){
           DT::datatable(
             extensions = "Scroller",
             editable = "cell",
-            options = list(responsive = TRUE, scrollY = 325, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
+            options = list(responsive = TRUE, scrollY = 360, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
             selection = list(mode = "single"),
             class = "display compact",
             rownames = FALSE
           )
-      }) 
+      })
     }
     
     proxyData = dataTableProxy('data_from')
@@ -173,30 +185,22 @@ load_from_projects <- function(input, output, session){
   })
 }
 
+# Load dara from file -----
 load_from_scv <- function(input, output, session){
   
   observeEvent(input$load_csv,{
     
     if(is.null(input$file_input_csv)){
-      sendSweetAlert(
-        session = session,
-        title = NULL,
-        width = 300,
-        showCloseButton = TRUE,
-        btn_labels = NA,
-        text = fluidRow(
-          column(
-            width = 12,
-            br(),
-            p("texto no a seleccionado proyecto")
-          )
-        ),
-        html = TRUE
-      )
+      return(NULL)
     }else{
-      # data_read <- eventReactive(input$file_input_csv, {
-      #   read.csv(input$file_input_csv$datapath)
-      # })
+      data_ext <- tools::file_ext(toString(input$file_input_csv))
+      
+      if(data_ext != "csv"){
+        return(NULL)
+      }else{
+        cat("ok")
+      }
+
       data_read <- read.csv(input$file_input_csv$datapath)
       
       output$data_from<-DT::renderDT({
@@ -211,7 +215,23 @@ load_from_scv <- function(input, output, session){
             class = "display compact",
             rownames = FALSE
           )
-      }) 
+      })
+      
+      output$data_config <- renderUI({
+        dropdownButton(
+          inputId = "mydropdown",
+          label = "Controls",
+          icon = icon("gear"),
+          status = "primary",
+          width = "300px",
+          circle = TRUE,
+          sliderInput(
+            inputId = "n",
+            label = "Number of observations",
+            min = 10, max = 100, value = 30
+          )
+        )
+      })
     }
     
    
