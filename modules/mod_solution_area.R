@@ -21,13 +21,32 @@ solution_area_ui<-function(id){
               width = 3,
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
-                h4("Load data"),
+                fluidRow(
+                  column(
+                    width = 12,
+                    fileInput(
+                      inputId = ns("file_input_csv"),
+                      width = "100%",
+                      label = "From CSV file",
+                      buttonLabel = span(class="ti-file", style = "font-size:22pt"),
+                      accept = c("text/csv","text/comma-separated-values","text/plain",".csv")
+                    ),
+                    radioButtons(
+                      "sep_csv_file", 
+                      "Separator",
+                      choices = c(
+                        Semicolon = ";",
+                        Comma = ","),
+                      selected = ";")
+                  )
+                ),
+                # hr(),
                 fluidRow(
                   column(
                     width = 12,
                     p("From projects"),
                     div(
-                      style = "margin-top:15px",
+                      # style = "margin-top:13px",
                       actionBttn(
                         ns("load_project"), 
                         label = "Load", 
@@ -35,24 +54,6 @@ solution_area_ui<-function(id){
                       )
                     )
                     
-                  )
-                ),
-                hr(),
-                fluidRow(
-                  column(
-                    width = 12,
-                    p("From CSV file"),
-                    fileInput(
-                      inputId = ns("file_input_csv"),
-                      label = NULL,
-                      buttonLabel = span(class="ti-file", style = "font-size:22pt"),
-                      accept = c("text/csv","text/comma-separated-values","text/plain",".csv")
-                    ),
-                    actionBttn(
-                      ns("load_csv"), 
-                      label = "Load", 
-                      size = "xs",
-                    )
                   )
                 ),
                 hr(),
@@ -72,12 +73,13 @@ solution_area_ui<-function(id){
                   style = "margin-bottom: 10px",
                   fluidRow(
                     column(
-                      width = 11,
-                      uiOutput(ns("data_title"))
+                      width = 1,
+                      uiOutput(ns("data_config")),
                     ),
                     column(
-                      width = 1,
-                      uiOutput(ns("data_config"))
+                      width = 11,
+                      style = "margin-top:5px",
+                      uiOutput(ns("data_title"))
                     )
                   )
                 ),
@@ -104,12 +106,6 @@ solution_area_ui<-function(id){
 solution_area_server<-function(input, output,session){
   ns <- session$ns
   
-  output$data_title <- renderUI({
-    tagList(
-      h4("bonita caratula")
-    )
-  })
-  
   load_from_projects(input, output, session)
  
   load_from_scv(input, output, session)
@@ -131,21 +127,11 @@ load_from_projects <- function(input, output, session){
     })
     
     if(ID_GLOBAL_PROJECT == ""){
-      sendSweetAlert(
-        session = session,
-        title = NULL,
-        width = 300,
-        showCloseButton = TRUE,
-        btn_labels = NA,
-        text = fluidRow(
-          column(
-            width = 12,
-            br(),
-            p("texto no a seleccionado proyecto")
-          )
-        ),
-        html = TRUE
-      )
+      output$data_title <- renderUI({
+        h4("no datos proyecto", style = "color:red")
+      })
+      
+      return(NULL)
     }else{
       assign("DATA_GLOBAL_PROJECT", data_select_path(), envir = .GlobalEnv )
       
@@ -186,17 +172,31 @@ load_from_projects <- function(input, output, session){
 # Load dara from file -----
 load_from_scv <- function(input, output, session){
   
-  observeEvent(input$load_csv,{
+  
+  output$data_from <- DT::renderDT({
+    
+    req(input$file_input_csv)
     
     if(is.null(input$file_input_csv)){
-      return(NULL)
+      
+      return((NULL))
+      
     }else{
       data_ext <- tools::file_ext(toString(input$file_input_csv))
+      
       if(data_ext != "csv"){
-        return(NULL)
-      }else{
-        data_read <- read.csv2(input$file_input_csv$datapath)
         
+        shinyjs::hide("data_config")
+        output$data_title <- renderUI({
+          h4("incorrecto", style = "color:red")
+        })
+        return((NULL))
+  
+      }else{
+        
+        shinyjs::show("data_config")
+        
+        data_read <- read.csv2(input$file_input_csv$datapath)
         assign("DATA_GLOBAL_CSV", data_read, envir = .GlobalEnv )
         
         output$data_title <- renderUI({
@@ -204,34 +204,35 @@ load_from_scv <- function(input, output, session){
           h4("texto")
         })
         
-        output$data_from<-DT::renderDT({
-          DATA_GLOBAL_CSV %>%
-            DT::datatable(
-              extensions = "Scroller",
-              editable = "cell",
-              options = list(responsive = TRUE, scrollY = 325, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
-              selection = list(mode = "single"),
-              class = "display compact",
-              rownames = FALSE
-            )
-        })
-        
         output$data_config <- renderUI({
           dropdownButton(
             inputId = "config_data_load",
             label = FALSE,
             size = "sm",
-            icon = icon("gear"),
+            icon = icon("sliders"),
             status = "primary",
-            right = TRUE,
             width = "300px",
             circle = TRUE,
-            h4("config")
+            h1("hola")
           )
         })
+        
+        DATA_GLOBAL_CSV %>%
+          DT::datatable(
+            extensions = "Scroller",
+            editable = "cell",
+            options = list(responsive = TRUE, scrollY = 360, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
+            selection = list(mode = "single"),
+            class = "display compact",
+            rownames = FALSE
+          )
+        
+        
       }
     }
-    proxyData = dataTableProxy('data_from')
+  })
+  
+  proxyData = dataTableProxy('data_from')
     observeEvent(input$data_from_cell_edit,{
       info = input$data_from_cell_edit
       i = info$row
@@ -240,5 +241,119 @@ load_from_scv <- function(input, output, session){
       DATA_GLOBAL_CSV[i, j] <<- DT::coerceValue(v, DATA_GLOBAL_CSV[i, j])
       replaceData(proxyData, DATA_GLOBAL_CSV, resetPaging = FALSE, rownames = FALSE)
     })
-  })
+  #   if(is.null(input$file_input_csv)){
+  #     return(NULL)
+  #   }else{
+  #     data_ext <- tools::file_ext(toString(input$file_input_csv))
+  #     
+  #     if(data_ext != "csv"){
+  #       return(NULL)
+  #       
+  #     }else{
+  #       data_read <- read.csv2(input$file_input_csv$datapath)
+  #       
+  #       assign("DATA_GLOBAL_CSV", data_read, envir = .GlobalEnv )
+  #       
+  #       output$data_title <- renderUI({
+  #         h4(xfun::file_ext(toString(input$file_input_csv)))
+  #         h4("texto")
+  #       })
+  #       output$data_from<-DT::renderDT({
+  #       DATA_GLOBAL_CSV %>%
+  #         DT::datatable(
+  #           extensions = "Scroller",
+  #           editable = "cell",
+  #           options = list(responsive = TRUE, scrollY = 325, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
+  #           selection = list(mode = "single"),
+  #           class = "display compact",
+  #           rownames = FALSE
+  #         )
+  #       })
+  #       output$data_config <- renderUI({
+  #         dropdownButton(
+  #           inputId = "config_data_load",
+  #           label = FALSE,
+  #           size = "sm",
+  #           icon = icon("gear"),
+  #           status = "primary",
+  #           right = TRUE,
+  #           width = "300px",
+  #           circle = TRUE,
+  #           h4("config")
+  #         )
+  #       })
+  #         
+  #     }
+  #   }
+  #   
+  #   proxyData = dataTableProxy('data_from')
+  #   observeEvent(input$data_from_cell_edit,{
+  #     info = input$data_from_cell_edit
+  #     i = info$row
+  #     j = info$col + 1
+  #     v = info$value
+  #     DATA_GLOBAL_CSV[i, j] <<- DT::coerceValue(v, DATA_GLOBAL_CSV[i, j])
+  #     replaceData(proxyData, DATA_GLOBAL_CSV, resetPaging = FALSE, rownames = FALSE)
+  #   })
+  #   
+  #   
+  #   
+  # })
+  # 
+  # observeEvent(input$load_csv,{
+  #   
+  #   if(is.null(input$file_input_csv)){
+  #     return(NULL)
+  #   }else{
+  #     data_ext <- tools::file_ext(toString(input$file_input_csv))
+  #     if(data_ext != "csv"){
+  #       return(NULL)
+  #     }else{
+  #       data_read <- read.csv2(input$file_input_csv$datapath)
+  #       
+  #       assign("DATA_GLOBAL_CSV", data_read, envir = .GlobalEnv )
+  #       
+  #       output$data_title <- renderUI({
+  #         # h4(xfun::file_ext(toString(input$file_input_csv)))
+  #         h4("texto")
+  #       })
+  #       
+  #       output$data_from<-DT::renderDT({
+  #         DATA_GLOBAL_CSV %>%
+  #           DT::datatable(
+  #             extensions = "Scroller",
+  #             editable = "cell",
+  #             options = list(responsive = TRUE, scrollY = 325, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
+  #             selection = list(mode = "single"),
+  #             class = "display compact",
+  #             rownames = FALSE
+  #           )
+  #       })
+  #       
+  #       output$data_config <- renderUI({
+  #         dropdownButton(
+  #           inputId = "config_data_load",
+  #           label = FALSE,
+  #           size = "sm",
+  #           icon = icon("gear"),
+  #           status = "primary",
+  #           right = TRUE,
+  #           width = "300px",
+  #           circle = TRUE,
+  #           h4("config")
+  #         )
+  #       })
+  #     }
+  #   }
+  # 
+  #   proxyData = dataTableProxy('data_from')
+  #   observeEvent(input$data_from_cell_edit,{
+  #     info = input$data_from_cell_edit
+  #     i = info$row
+  #     j = info$col + 1
+  #     v = info$value
+  #     DATA_GLOBAL_CSV[i, j] <<- DT::coerceValue(v, DATA_GLOBAL_CSV[i, j])
+  #     replaceData(proxyData, DATA_GLOBAL_CSV, resetPaging = FALSE, rownames = FALSE)
+  #   })
+  # })
 }
