@@ -17,8 +17,6 @@ library(shinycssloaders)
 library(highcharter)
 library(dplyr)
 library(rsconnect)
-library(tools)
-library(xfun)
 
 # Load modules -----
 source("modules/mod_header_area.R")
@@ -31,6 +29,7 @@ source("modules/mod_dbQueries.R")
 # Global constants -----
 ID_GLOBAL_PROJECT <- ""
 DATA_GLOBAL_PROJECT <- ""
+DATA_GLOBAL_CSV <- ""
 
 
 
