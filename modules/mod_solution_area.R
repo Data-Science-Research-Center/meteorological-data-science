@@ -113,27 +113,33 @@ solution_area_server<-function(input, output,session){
 
 # Load data from projects -----
 load_from_projects <- function(input, output, session){
+  
+  
+  
   observeEvent(input$load_project,{
     
     data_select_path <- reactive({
-      path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
+      path_json <- data_specific(session$userData$ID_GLOBAL_PROJECT) %>%
         select(projectData)
       fromJSON(txt = sprintf("%s",path_json), simplifyDataFrame = TRUE)
     })
 
     data_select_title <- reactive({
-      path_json <- data_specific(ID_GLOBAL_PROJECT) %>%
+      path_json <- data_specific(session$userData$ID_GLOBAL_PROJECT) %>%
         select(projectName)
     })
     
-    if(ID_GLOBAL_PROJECT == ""){
+    if(is.null(session$userData$ID_GLOBAL_PROJECT)){
+
       output$data_title <- renderUI({
         h4("no datos proyecto", style = "color:red")
       })
-      
+
       return(NULL)
+
     }else{
-      assign("DATA_GLOBAL_PROJECT", data_select_path(), envir = .GlobalEnv )
+
+      DATA_GLOBAL_PROJECT <<- data_select_path()
       
       output$data_title <- renderUI({
         req(data_select_title())
@@ -164,7 +170,10 @@ load_from_projects <- function(input, output, session){
       v = info$value
       DATA_GLOBAL_PROJECT[i, j] <<- DT::coerceValue(v, DATA_GLOBAL_PROJECT[i, j])
       replaceData(proxyData, DATA_GLOBAL_PROJECT, resetPaging = FALSE, rownames = FALSE)
+      
+      session$userData$DATA_GLOBAL_PROJECT <- DATA_GLOBAL_PROJECT 
     })
+    
     
   })
 }
@@ -196,11 +205,9 @@ load_from_scv <- function(input, output, session){
         
         shinyjs::show("data_config")
         
-        data_read <- read.csv2(input$file_input_csv$datapath)
-        assign("DATA_GLOBAL_CSV", data_read, envir = .GlobalEnv )
+        DATA_GLOBAL_CSV <<- read.csv2(input$file_input_csv$datapath)
         
         output$data_title <- renderUI({
-          # h4(xfun::file_ext(toString(input$file_input_csv)))
           h4("texto")
         })
         
@@ -240,120 +247,7 @@ load_from_scv <- function(input, output, session){
       v = info$value
       DATA_GLOBAL_CSV[i, j] <<- DT::coerceValue(v, DATA_GLOBAL_CSV[i, j])
       replaceData(proxyData, DATA_GLOBAL_CSV, resetPaging = FALSE, rownames = FALSE)
+      
+      session$userData$DATA_GLOBAL_CSV <- DATA_GLOBAL_CSV
     })
-  #   if(is.null(input$file_input_csv)){
-  #     return(NULL)
-  #   }else{
-  #     data_ext <- tools::file_ext(toString(input$file_input_csv))
-  #     
-  #     if(data_ext != "csv"){
-  #       return(NULL)
-  #       
-  #     }else{
-  #       data_read <- read.csv2(input$file_input_csv$datapath)
-  #       
-  #       assign("DATA_GLOBAL_CSV", data_read, envir = .GlobalEnv )
-  #       
-  #       output$data_title <- renderUI({
-  #         h4(xfun::file_ext(toString(input$file_input_csv)))
-  #         h4("texto")
-  #       })
-  #       output$data_from<-DT::renderDT({
-  #       DATA_GLOBAL_CSV %>%
-  #         DT::datatable(
-  #           extensions = "Scroller",
-  #           editable = "cell",
-  #           options = list(responsive = TRUE, scrollY = 325, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
-  #           selection = list(mode = "single"),
-  #           class = "display compact",
-  #           rownames = FALSE
-  #         )
-  #       })
-  #       output$data_config <- renderUI({
-  #         dropdownButton(
-  #           inputId = "config_data_load",
-  #           label = FALSE,
-  #           size = "sm",
-  #           icon = icon("gear"),
-  #           status = "primary",
-  #           right = TRUE,
-  #           width = "300px",
-  #           circle = TRUE,
-  #           h4("config")
-  #         )
-  #       })
-  #         
-  #     }
-  #   }
-  #   
-  #   proxyData = dataTableProxy('data_from')
-  #   observeEvent(input$data_from_cell_edit,{
-  #     info = input$data_from_cell_edit
-  #     i = info$row
-  #     j = info$col + 1
-  #     v = info$value
-  #     DATA_GLOBAL_CSV[i, j] <<- DT::coerceValue(v, DATA_GLOBAL_CSV[i, j])
-  #     replaceData(proxyData, DATA_GLOBAL_CSV, resetPaging = FALSE, rownames = FALSE)
-  #   })
-  #   
-  #   
-  #   
-  # })
-  # 
-  # observeEvent(input$load_csv,{
-  #   
-  #   if(is.null(input$file_input_csv)){
-  #     return(NULL)
-  #   }else{
-  #     data_ext <- tools::file_ext(toString(input$file_input_csv))
-  #     if(data_ext != "csv"){
-  #       return(NULL)
-  #     }else{
-  #       data_read <- read.csv2(input$file_input_csv$datapath)
-  #       
-  #       assign("DATA_GLOBAL_CSV", data_read, envir = .GlobalEnv )
-  #       
-  #       output$data_title <- renderUI({
-  #         # h4(xfun::file_ext(toString(input$file_input_csv)))
-  #         h4("texto")
-  #       })
-  #       
-  #       output$data_from<-DT::renderDT({
-  #         DATA_GLOBAL_CSV %>%
-  #           DT::datatable(
-  #             extensions = "Scroller",
-  #             editable = "cell",
-  #             options = list(responsive = TRUE, scrollY = 325, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
-  #             selection = list(mode = "single"),
-  #             class = "display compact",
-  #             rownames = FALSE
-  #           )
-  #       })
-  #       
-  #       output$data_config <- renderUI({
-  #         dropdownButton(
-  #           inputId = "config_data_load",
-  #           label = FALSE,
-  #           size = "sm",
-  #           icon = icon("gear"),
-  #           status = "primary",
-  #           right = TRUE,
-  #           width = "300px",
-  #           circle = TRUE,
-  #           h4("config")
-  #         )
-  #       })
-  #     }
-  #   }
-  # 
-  #   proxyData = dataTableProxy('data_from')
-  #   observeEvent(input$data_from_cell_edit,{
-  #     info = input$data_from_cell_edit
-  #     i = info$row
-  #     j = info$col + 1
-  #     v = info$value
-  #     DATA_GLOBAL_CSV[i, j] <<- DT::coerceValue(v, DATA_GLOBAL_CSV[i, j])
-  #     replaceData(proxyData, DATA_GLOBAL_CSV, resetPaging = FALSE, rownames = FALSE)
-  #   })
-  # })
 }

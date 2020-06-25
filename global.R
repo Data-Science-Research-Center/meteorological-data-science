@@ -27,11 +27,5 @@ source("modules/mod_dbConnection.R")
 source("modules/mod_dbCredentials.R")
 source("modules/mod_dbQueries.R")
 
-# Global constants -----
-ID_GLOBAL_PROJECT <- ""
-DATA_GLOBAL_PROJECT <- ""
-DATA_GLOBAL_CSV <- ""
-
-
 
 

@@ -58,6 +58,7 @@ explorer_area_ui <- function(id) {
 # Explorer area SERVER -----
 explorer_area_server<- function(input, output, session) {
   ns <- session$ns
+  
 
   data_all_select <- reactive({
     data_all() %>%
@@ -378,6 +379,7 @@ explorer_area_server<- function(input, output, session) {
   observeEvent(input$password_value_acept,{
     req(selected_project())
     
+    
     pass_project <- input$password_edit_value
     id_project <- selected_project()$project_db_selected$`_id`
     
@@ -390,7 +392,7 @@ explorer_area_server<- function(input, output, session) {
     })
     
     if(text_result == "Successfully edited"){
-      assign("ID_GLOBAL_PROJECT", id_project, envir = .GlobalEnv)
+      session$userData$ID_GLOBAL_PROJECT <- id_project
     }
     
     
