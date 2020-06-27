@@ -9,7 +9,6 @@
 library(shiny)
 library(jsonlite)
 library(mongolite)
-library(readr)
 library(shinymaterial)
 library(DT)
 library(shinyWidgets)
