@@ -8,14 +8,13 @@
 # Solution area UI -----
 solution_area_ui<-function(id){
   ns <- NS(id)
-  
   fluidRow(
     column(
       width = 12,
       tabsetPanel(
         type = "tabs",
         tabPanel( 
-          "Data", # Section 1
+          "Data Viewer", # Section 1
           fluidRow(
             column( # Menu
               width = 3,
@@ -24,7 +23,7 @@ solution_area_ui<-function(id){
                 fluidRow(
                   column(
                     width = 12,
-                    h4("Titulo"),
+                    h4("Data Viewer"),
                     p("descripcion"),
                     fileInput(
                       inputId = ns("file_input_csv"),
@@ -40,6 +39,17 @@ solution_area_ui<-function(id){
                         Comma = ",",
                         Semicolon = ";"),
                       selected = ","
+                    ),
+                    hr(),
+                    p("Load the data into the system"),
+                    div(
+                      style = "margin-top:10px",
+                      actionBttn(
+                        inputId = ns("btt_global_load"),
+                        label = "Load",
+                        size = "xs",
+                        
+                      )
                     )
                   )
                 ),
@@ -60,7 +70,7 @@ solution_area_ui<-function(id){
                   uiOutput(ns("data_title"))
                 ),
                 div(
-                  style = "font-size: 8.5pt",
+                  style = "font-size: 8.5pt;",
                   DT::DTOutput(ns("data_from"))
                 )
               )
@@ -73,17 +83,13 @@ solution_area_ui<-function(id){
             column( # Menu
               width = 3,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:300px",
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Temporary Data"),
                   p("descripcion"),
                 ),
                 div(
-                  actionBttn(
-                    inputId = ns("btt_load_td"),
-                    label = "Graph",
-                    size = "xs"
-                  )
+                  uiOutput(ns("var_select_td"))
                 )
               )
             ),
@@ -91,9 +97,6 @@ solution_area_ui<-function(id){
               width = 9,
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
-                div(
-                  uiOutput(ns("td_tittle")),
-                ),
                 div(
                   plotOutput(ns("td_plot"))
                 )
@@ -141,6 +144,8 @@ solution_area_ui<-function(id){
 # Solution area SERVER -----
 solution_area_server<-function(input, output,session){
   ns <- session$ns
+  csv_names <- reactiveVal()
+  csv_data <- reactiveVal()
   
   # Load CSV area
   fun_load_csv(input,output,session)
@@ -156,16 +161,23 @@ solution_area_server<-function(input, output,session){
     replaceData(proxyData, session$userData$DATA_CSV, resetPaging = FALSE, rownames = FALSE)
   })
   
-  # Load Temporary Data
-  fun_td(input,output,session)
-  # Temporary Data Plot
-  # output$td_plot <- renderPlot({
-  # plot(x = session$userData$DATA_CSV$Humedad.Relativa.Aire, y = session$userData$DATA_CSV$Temperatura.Aire)
-  # cat(as.character( names(session$userData$DATA_CSV)))
-  # })
-  #     
-  #   
-  # 
+  #Load data csv in system
+  observeEvent(input$btt_global_load,{
+    if(is.null(session$userData$DATA_CSV)){
+      return(NULL)
+    }else{
+      csv_names(names(session$userData$DATA_CSV))
+      csv_data(session$userData$DATA_CSV)
+      
+       output$td_plot <- renderPlot({
+         plot(x = csv_data()$Humedad.Relativa.Aire, y = csv_data()$DATA_CSV$Presion.Atmosferica)
+      })
+    }
+  })
+  
+  # Load data in system
+  fun_td(input,output,session,csv_names,csv_data)
+  
   
 }
 
@@ -209,7 +221,7 @@ fun_load_csv <- function(input,output,session){
           DT::datatable(
             extensions = "Scroller",
             editable = "cell",
-            options = list(responsive = TRUE, scrollY = 360, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
+            options = list(responsive = TRUE, scrollY = 390, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
             selection = list(mode = "single"),
             class = "display compact",
             rownames = FALSE
@@ -220,17 +232,22 @@ fun_load_csv <- function(input,output,session){
   })
 }
 
-# Fucntion Load Temporary Data
-fun_td <- function(input,output,session){
+# Function temporary data
+fun_td <- function(input,output,session,csv_names,csv_data){
   
-  var_td <- reactive({
-    names(session$userData$DATA_CSV)
+  output$var_select_td <- renderUI({
+    pickerInput(
+      inputId = "somevalue",
+      label = "A label",
+      choices = csv_names()
+    )
   })
   
-  observeEvent(input$btt_load_td,{
-    output$td_plot <- renderPlot({
-      plot(x = session$userData$DATA_CSV$Humedad.Relativa.Aire, y = session$userData$DATA_CSV$Temperatura.Aire)
-      })
-  })
-}
 
+  
+  
+  
+  
+  
+
+}
