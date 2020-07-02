@@ -168,10 +168,10 @@ input:-webkit-autofill:focus {
 }
 
 .sky-bg-other {
-    background: #EE2C2C ;
-    background: -webkit-gradient(linear, left top, left bottom, from(#EE2C2C ), to(#318c81));
-    background: linear-gradient(to bottom, #EE2C2C  0%, #318c81 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#EE2C2C ', endColorstr='#318c81', GradientType=0);
+    background: #24AAE1  ;
+    background: -webkit-gradient(linear, left top, left bottom, from(#24AAE1 ), to(#318c81));
+    background: linear-gradient(to bottom, #24AAE1   0%, #318c81 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#24AAE1  ', endColorstr='#318c81', GradientType=0);
     color: #ffffff;
 }
 

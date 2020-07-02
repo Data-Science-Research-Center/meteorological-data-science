@@ -24,15 +24,6 @@ explorer_area_ui <- function(id) {
             width = 12,
             DT::DTOutput(ns("project_data_csv")), 
             style = "font-size: 9pt;"
-          ),
-          column(
-            width = 1,
-            style = "margin: 15px 0px",
-            actionBttn(
-              inputId = ns("edit_data_value"),
-              label = "Palabra",
-              size = "xs",
-            )
           )
         )
       ),
@@ -327,76 +318,5 @@ explorer_area_server<- function(input, output, session) {
       })
     }
   })
-  
-  observeEvent(input$edit_data_value, {
-    sendSweetAlert(
-      session = session,
-      title = NULL,
-      width = 300,
-      showCloseButton = TRUE,
-      btn_labels = NA,
-      text = fluidRow(
-        column(
-          width = 12,
-          uiOutput(ns("edit_value_html")),
-          style = "font-size: 10pt"
-        )
-      ),
-      html = TRUE
-    )
-  })
-  
-  output$edit_value_html <- renderUI({
-    req(selected_project())
-    tagList(
-      br(),
-      # h4("Update your data"),
-      div(
-        style = "text-align:justify",
-        # p("You will edit ", strong(selected_project()$project_db_selected$projectName)," data. The data will be displayed in the ", strong("solutions area.")),
-        p("Please type your project ", strong("password")," to confirm.")
-      ),
-      div(
-        passwordInput(
-          inputId = ns("password_edit_value"),
-          label = NULL,
-          width = "100%"
-        ),
-        uiOutput(
-          ns("result_edit_value")
-        )
-      ),
-      div(
-        actionBttn(
-          ns("password_value_acept"), 
-          label = "Edit", 
-          size = "s",
-        )
-      )
-    )
-  })
-  
-  observeEvent(input$password_value_acept,{
-    req(selected_project())
-    
-    
-    pass_project <- input$password_edit_value
-    id_project <- selected_project()$project_db_selected$`_id`
-    
-    text_result <- password_value(id_project, pass_project)
-    
-    output$result_edit_value <- renderUI({
-      tagList(
-        h6(text_result, style = "color:red")
-      )
-    })
-    
-    if(text_result == "Successfully edited"){
-      session$userData$ID_GLOBAL_PROJECT <- id_project
-    }
-    
-    
-  })
-  
 }
 

@@ -89,7 +89,17 @@ solution_area_ui<-function(id){
                   p("descripcion"),
                 ),
                 div(
-                  uiOutput(ns("var_select_td"))
+                  uiOutput(ns("var1_select_td"))
+                ),
+                div(
+                  uiOutput(ns("var2_select_td"))
+                ),
+                div(
+                  actionBttn(
+                    inputId = ns("bttn_graph_td"),
+                    label = "Graph",
+                    size = "xs",
+                  )
                 )
               )
             ),
@@ -144,9 +154,10 @@ solution_area_ui<-function(id){
 # Solution area SERVER -----
 solution_area_server<-function(input, output,session){
   ns <- session$ns
-  csv_names <- reactiveVal()
-  csv_data <- reactiveVal()
   
+  # Data var reactive
+  csv_names <- reactiveVal()
+
   # Load CSV area
   fun_load_csv(input,output,session)
   
@@ -160,25 +171,18 @@ solution_area_server<-function(input, output,session){
     session$userData$DATA_CSV[i, j] <<- DT::coerceValue(v, session$userData$DATA_CSV[i, j])
     replaceData(proxyData, session$userData$DATA_CSV, resetPaging = FALSE, rownames = FALSE)
   })
-  
-  #Load data csv in system
+
+  # Load data csv in system
   observeEvent(input$btt_global_load,{
     if(is.null(session$userData$DATA_CSV)){
       return(NULL)
     }else{
       csv_names(names(session$userData$DATA_CSV))
-      csv_data(session$userData$DATA_CSV)
-      
-       output$td_plot <- renderPlot({
-         plot(x = csv_data()$Humedad.Relativa.Aire, y = csv_data()$DATA_CSV$Presion.Atmosferica)
-      })
     }
   })
   
-  # Load data in system
-  fun_td(input,output,session,csv_names,csv_data)
-  
-  
+  # Load Temporary data
+  fun_td(input,output,session,csv_names)
 }
 
 # Function Load CSV area
@@ -193,8 +197,6 @@ fun_load_csv <- function(input,output,session){
       
       if(data_ext != "csv"){
         
-        shinyjs::hide("data_config")
-        
         output$data_title <- renderUI({
           h4("incorrecto", style = "color:red")
         })
@@ -202,7 +204,6 @@ fun_load_csv <- function(input,output,session){
         return((NULL))
         
       }else{
-        shinyjs::show("data_config")
         
         tryCatch(
           {
@@ -233,21 +234,49 @@ fun_load_csv <- function(input,output,session){
 }
 
 # Function temporary data
-fun_td <- function(input,output,session,csv_names,csv_data){
+fun_td <- function(input,output,session,csv_names){
+  ns <- session$ns
   
-  output$var_select_td <- renderUI({
-    pickerInput(
-      inputId = "somevalue",
-      label = "A label",
-      choices = csv_names()
+  output$var1_select_td <- renderUI({
+    tagList(
+      pickerInput(
+        inputId = ns("picker_var1_td"),
+        label = "A label",
+        # multiple = FALSE,
+        # choices = c("Fecha","Hora","Humedad.Relativa.Aire","Presion.Atmosferica","Temperatura.Aire","Viento.Direccion","Viento.Velocidad","Precipitacion"),
+        choices = csv_names()
+      )
     )
+    
+  })
+  
+  output$var2_select_td <- renderUI({
+    tagList(
+      pickerInput(
+        inputId = ns("picker_var2_td"),
+        label = "A label",
+        # multiple = TRUE,
+        # options = pickerOptions(
+        #   iconBase = 'icomoon',
+        #   tickIcon = "icon-check"
+        # ),
+        # choices = c("Fecha","Hora","Humedad.Relativa.Aire","Presion.Atmosferica","Temperatura.Aire","Viento.Direccion","Viento.Velocidad","Precipitacion"),
+        choices = csv_names()
+      )
+    )
+    
   })
   
 
-  
-  
-  
-  
-  
+  observeEvent(input$bttn_graph_td,{
+    if(is.null(session$userData$DATA_CSV)){
+      return(NULL)
+    }else{
+      output$td_plot <- renderPlot({
+        # plot(x = csv_data()$csv_names()[3], y = csv_data()$csv_names()[4])
+        ggplot2::ggplot(session$userData$DATA_CSV, aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group=1)) + geom_line() 
+      })
+    }
+  })
 
 }
