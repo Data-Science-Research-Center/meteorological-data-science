@@ -25,13 +25,7 @@ solution_area_ui<-function(id){
                     width = 12,
                     h4("Data Viewer"),
                     p("descripcion"),
-                    fileInput(
-                      inputId = ns("file_input_csv"),
-                      width = "100%",
-                      label = NULL,
-                      buttonLabel = span(class="ti-file", style = "font-size:22pt"),
-                      accept = c("text/csv","text/comma-separated-values",".csv")
-                    ),
+                    br(),
                     radioButtons(
                       ns("sep"), 
                       "Separator",
@@ -40,16 +34,12 @@ solution_area_ui<-function(id){
                         Semicolon = ";"),
                       selected = ","
                     ),
-                    hr(),
-                    p("Load the data into the system"),
-                    div(
-                      style = "margin-top:10px",
-                      actionBttn(
-                        inputId = ns("btt_global_load"),
-                        label = "Load",
-                        size = "xs",
-                        
-                      )
+                    fileInput(
+                      inputId = ns("file_input_csv"),
+                      width = "100%",
+                      label = NULL,
+                      buttonLabel = span(class="ti-file", style = "font-size:22pt"),
+                      accept = c("text/csv","text/comma-separated-values",".csv")
                     )
                   )
                 ),
@@ -89,25 +79,49 @@ solution_area_ui<-function(id){
                   p("descripcion"),
                 ),
                 div(
-                  uiOutput(ns("var1_select_td"))
-                ),
-                div(
+                  uiOutput(ns("var1_select_td")),
                   uiOutput(ns("var2_select_td"))
                 ),
+                hr(),
                 div(
-                  actionBttn(
-                    inputId = ns("bttn_graph_td"),
-                    label = "Graph",
-                    size = "xs",
-                  )
-                )
+                  p("comparison"),
+                  uiOutput(ns("var3_select_td"))
+                ),
+                # div(
+                #   colorSelectorInput(
+                #     inputId = "mycolor1", label = "Pick a color :",
+                #     choices = c("steelblue", "cornflowerblue",
+                #                 "firebrick", "palegoldenrod",
+                #                 "forestgreen")
+                #   ),
+                # )
               )
             ),
             column( # Result
               width = 9,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
+                  fluidRow(
+                    column(
+                      width = 2,
+                      offset = 10,
+                      style = "text-align:right",
+                      dropdownButton(
+                        inputId = ns("td_config_drop"),
+                        label =  NULL,
+                        circle = TRUE,
+                        status = "primary",
+                        icon =  icon("gear"),
+                        width = "30%",
+                        size = "sm",
+                        h3("hola")
+                      )
+                    )
+                  )
+                ),
+                div(
+                  style = "height:500px",
                   plotOutput(ns("td_plot"))
                 )
               )
@@ -157,36 +171,9 @@ solution_area_server<-function(input, output,session){
   
   # Data var reactive
   csv_names <- reactiveVal()
-
+  csv_data <- reactiveVal()
+  
   # Load CSV area
-  fun_load_csv(input,output,session)
-  
-  # Reload CSV data values
-  proxyData = dataTableProxy('data_from')
-  observeEvent(input$data_from_cell_edit,{
-    infor = input$data_from_cell_edit
-    i = infor$row
-    j = infor$col + 1
-    v = infor$value
-    session$userData$DATA_CSV[i, j] <<- DT::coerceValue(v, session$userData$DATA_CSV[i, j])
-    replaceData(proxyData, session$userData$DATA_CSV, resetPaging = FALSE, rownames = FALSE)
-  })
-
-  # Load data csv in system
-  observeEvent(input$btt_global_load,{
-    if(is.null(session$userData$DATA_CSV)){
-      return(NULL)
-    }else{
-      csv_names(names(session$userData$DATA_CSV))
-    }
-  })
-  
-  # Load Temporary data
-  fun_td(input,output,session,csv_names)
-}
-
-# Function Load CSV area
-fun_load_csv <- function(input,output,session){
   output$data_from <- DT::renderDT({
     if(is.null(input$file_input_csv)){
       
@@ -205,6 +192,7 @@ fun_load_csv <- function(input,output,session){
         
       }else{
         
+        
         tryCatch(
           {
             session$userData$DATA_CSV <- read.csv(input$file_input_csv$datapath, sep = input$sep, fileEncoding = "UTF-8-BOM")
@@ -213,6 +201,9 @@ fun_load_csv <- function(input,output,session){
             stop(safeError(e))
           }
         )
+        
+        csv_names(names(session$userData$DATA_CSV))
+        csv_data(session$userData$DATA_CSV)
         
         output$data_title <- renderUI({
           h4("texto")
@@ -231,23 +222,27 @@ fun_load_csv <- function(input,output,session){
       }
     }
   })
-}
-
-# Function temporary data
-fun_td <- function(input,output,session,csv_names){
-  ns <- session$ns
   
+  # Reload CSV data values
+  proxyData = dataTableProxy('data_from')
+  observeEvent(input$data_from_cell_edit,{
+    infor = input$data_from_cell_edit
+    i = infor$row
+    j = infor$col + 1
+    v = infor$value
+    session$userData$DATA_CSV[i, j] <<- DT::coerceValue(v, session$userData$DATA_CSV[i, j])
+    replaceData(proxyData, session$userData$DATA_CSV, resetPaging = FALSE, rownames = FALSE)
+    csv_data(session$userData$DATA_CSV)
+  })
+
   output$var1_select_td <- renderUI({
     tagList(
       pickerInput(
         inputId = ns("picker_var1_td"),
         label = "A label",
-        # multiple = FALSE,
-        # choices = c("Fecha","Hora","Humedad.Relativa.Aire","Presion.Atmosferica","Temperatura.Aire","Viento.Direccion","Viento.Velocidad","Precipitacion"),
         choices = csv_names()
       )
     )
-    
   })
   
   output$var2_select_td <- renderUI({
@@ -255,28 +250,30 @@ fun_td <- function(input,output,session,csv_names){
       pickerInput(
         inputId = ns("picker_var2_td"),
         label = "A label",
-        # multiple = TRUE,
-        # options = pickerOptions(
-        #   iconBase = 'icomoon',
-        #   tickIcon = "icon-check"
-        # ),
-        # choices = c("Fecha","Hora","Humedad.Relativa.Aire","Presion.Atmosferica","Temperatura.Aire","Viento.Direccion","Viento.Velocidad","Precipitacion"),
         choices = csv_names()
       )
     )
-    
   })
   
-
-  observeEvent(input$bttn_graph_td,{
-    if(is.null(session$userData$DATA_CSV)){
-      return(NULL)
-    }else{
-      output$td_plot <- renderPlot({
-        # plot(x = csv_data()$csv_names()[3], y = csv_data()$csv_names()[4])
-        ggplot2::ggplot(session$userData$DATA_CSV, aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group=1)) + geom_line() 
-      })
-    }
+  output$var3_select_td <- renderUI({
+    tagList(
+      pickerInput(
+        inputId = ns("picker_var3_td"),
+        label = "A label",
+        choices = csv_names()
+      )
+    )
+  })
+  
+  observe({
+    output$td_plot <- renderPlot({
+      
+      if(is.null(input$picker_var1_td)){
+        return(NULL)
+      }else{
+        ggplot2::ggplot(csv_data()) + geom_line(aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group=1), color = "red")
+      }
+    })
   })
 
 }

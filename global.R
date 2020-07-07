@@ -17,6 +17,7 @@ library(highcharter)
 library(rsconnect)
 library(shinyjs)
 library(tidyverse)
+library(colourpicker)
 
 # Load modules -----
 source("modules/mod_header_area.R")
