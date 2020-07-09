@@ -28,7 +28,7 @@ solution_area_ui<-function(id){
                     br(),
                     radioButtons(
                       ns("sep"), 
-                      "Separator",
+                      label = "Separator",
                       choices = c(
                         Comma = ",",
                         Semicolon = ";"),
@@ -37,7 +37,7 @@ solution_area_ui<-function(id){
                     fileInput(
                       inputId = ns("file_input_csv"),
                       width = "100%",
-                      label = NULL,
+                      label = "file",
                       buttonLabel = span(class="ti-file", style = "font-size:22pt"),
                       accept = c("text/csv","text/comma-separated-values",".csv")
                     )
@@ -84,7 +84,16 @@ solution_area_ui<-function(id){
                 ),
                 hr(),
                 div(
-                  p("comparison"),
+                  p("description text"),
+                  # materialSwitch(
+                  #   inputId = ns("switch_com_td"),
+                  #   label = "comparison"
+                  # ),
+                  checkboxInput(
+                    inputId = ns("check_able_td"),
+                    label = "comparison",
+                    value = FALSE
+                  ),
                   uiOutput(ns("var3_select_td"))
                 ),
                 # div(
@@ -192,7 +201,6 @@ solution_area_server<-function(input, output,session){
         
       }else{
         
-        
         tryCatch(
           {
             session$userData$DATA_CSV <- read.csv(input$file_input_csv$datapath, sep = input$sep, fileEncoding = "UTF-8-BOM")
@@ -260,7 +268,8 @@ solution_area_server<-function(input, output,session){
       pickerInput(
         inputId = ns("picker_var3_td"),
         label = "A label",
-        choices = csv_names()
+        choices = csv_names(),
+        selected = NULL
       )
     )
   })
@@ -271,9 +280,25 @@ solution_area_server<-function(input, output,session){
       if(is.null(input$picker_var1_td)){
         return(NULL)
       }else{
-        ggplot2::ggplot(csv_data()) + geom_line(aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group=1), color = "red")
+        if(input$check_able_td == FALSE){
+          ggplot(csv_data()) + geom_line(mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group=1), color = "red") 
+        }else{
+          ggplot(csv_data()) + geom_line(mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group=1), color = "red") + geom_line(aes_string(x = input$picker_var1_td, y = input$picker_var3_td, group=2), color = "blue")
+        }
       }
     })
   })
-
+  
+  # observe({
+  #   
+  #     if(input$check_able_td == TRUE){
+  #       output$td_plot <- renderPlot({
+  #       ggplot_graph <<- ggplot_graph + geom_line(aes_string(x = input$picker_var1_td, y = input$picker_var3_td, group=1), color = "blue")
+  #       ggplot_graph
+  #       })
+  #     }else{
+  #       return(NULL)
+  #     }
+  #   
+  # })
 }
