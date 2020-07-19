@@ -68,14 +68,14 @@ solution_area_ui<-function(id){
           )
         ),
         tabPanel(
-          "Temporary Data", # Section 2 
+          "Temporary Graphics", # Section 2 
           fluidRow(
             column( # Menu
               width = 3,
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
-                  h4("Temporary Data"),
+                  h4("Temporary Graphics"),
                   p("descripcion"),
                 ),
                 div(
@@ -161,15 +161,45 @@ solution_area_ui<-function(id){
                   )
                 ),
                 div(
-                  plotOutput(ns("td_plot")),
-                  uiOutput(ns("slider_x"))
+                  plotOutput(ns("td_plot"))
                 )
               )
             )
           )
         ),
         tabPanel(
-          "Summary", # Section 3
+          "Descriptive Graphics", # Section 3
+          fluidRow(
+            column(
+              width = 3,
+              material_card(
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:300px",
+                div(
+                  h4("Descriptive Graphics"),
+                  p("descripcion"),
+                ),
+                div(
+                  
+                )
+              )
+            ),
+            column(
+              width = 9,
+              material_card(
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
+                div(
+                  uiOutput(ns("fgfgfgfgfg")),
+                  h1("hola")
+                ),
+                div(
+                  
+                )
+              )
+            )
+          )
+        ),
+        tabPanel(
+          "summary", # Section 4
           fluidRow(
             column(
               width = 3,
@@ -189,7 +219,38 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
                 div(
-                  uiOutput(ns("fgfgfgfgfg")),
+                  uiOutput(ns("fgfsdsdgfg")),
+                  h1("hola")
+                ),
+                div(
+                  
+                )
+              )
+            )
+          )
+        ),
+        tabPanel(
+          "summary", # Section 5
+          fluidRow(
+            column(
+              width = 3,
+              material_card(
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:300px",
+                div(
+                  h4("Titulo"),
+                  p("descripcion"),
+                ),
+                div(
+                  
+                )
+              )
+            ),
+            column(
+              width = 9,
+              material_card(
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
+                div(
+                  uiOutput(ns("fdfdfdfdfgfgfgfgfg")),
                   h1("hola")
                 ),
                 div(
@@ -305,30 +366,6 @@ solution_area_server<-function(input, output,session){
       )
     )
   })
-  
-  output$slider_x <- renderUI({
-    # sliderTextInput(
-    #   inputId = ns("x_slider_x"),
-    #   label = "Null",
-    #   grid = TRUE,
-    #   force_edges = TRUE,
-    #   choices = csv_data()
-    # )
-    # sliderTextInput(
-    #   inputId = ns("ddd"),
-    #   label = NULL,
-    #   force_edges = TRUE,
-    #   grid = TRUE,
-    #   choices = c("hola","chao", "adios", "comer"),
-    #   min = "hola",
-    #   max = "comer",
-    #   value = c("chao", "adios")
-    # )
-    # sliderInput(
-    #   "slider2", label = NULL, min = 0,
-    #   max = 100, value = c(40, 60)
-    # )
-  })
 
   observe({
     
@@ -354,7 +391,8 @@ solution_area_server<-function(input, output,session){
                   shape = as.numeric(input$picker_shape_point), 
                   size = 3, 
                   color = input$col_line1
-                )
+                ) +
+                theme_minimal()
             }else{
               ggplot(
                 csv_data(),
@@ -375,7 +413,8 @@ solution_area_server<-function(input, output,session){
                 labs(
                   x = input$picker_var1_td, 
                   y =  sprintf("%s - %s", input$picker_var2_td, input$picker_var3_td)
-                )
+                ) + 
+                theme_minimal()
             }
           },
           "style_b" = {
@@ -387,7 +426,8 @@ solution_area_server<-function(input, output,session){
                 geom_line(
                   color = input$col_line1,
                   size = as.numeric(input$picker_size_line)
-                )
+                ) +
+                theme_minimal()
             }else{
               ggplot(
                 csv_data(),
@@ -406,7 +446,8 @@ solution_area_server<-function(input, output,session){
                 labs(
                   x = input$picker_var1_td, 
                   y =  sprintf("%s - %s", input$picker_var2_td, input$picker_var3_td)
-                )
+                ) +
+                theme_minimal()
             }
           },
           "style_c" = {
@@ -424,7 +465,8 @@ solution_area_server<-function(input, output,session){
                   shape = as.numeric(input$picker_shape_point), 
                   size = 3, 
                   color = input$col_line1
-                )
+                ) +
+                theme_minimal()
             }else{
               ggplot(
                 csv_data(),
@@ -455,7 +497,8 @@ solution_area_server<-function(input, output,session){
                 labs(
                   x = input$picker_var1_td, 
                   y =  sprintf("%s - %s", input$picker_var2_td, input$picker_var3_td)
-                )
+                ) +
+                theme_minimal()
             }
             
           }

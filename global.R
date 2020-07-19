@@ -16,7 +16,9 @@ library(shinycssloaders)
 library(highcharter)
 library(rsconnect)
 library(shinyjs)
-library(tidyverse)
+library(ggplot2)
+library(readr)
+library(dplyr)
 library(colourpicker)
 
 # Load modules -----
