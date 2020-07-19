@@ -79,59 +79,90 @@ solution_area_ui<-function(id){
                   p("descripcion"),
                 ),
                 div(
+                  radioButtons(
+                    inputId = ns("radio_geom_type"), 
+                    label = "Type of graphic", 
+                    choices = c("Dot" = "style_a", "Line" = "style_b", "Dot & Line" = "style_c"),
+                    selected = "style_a",
+                    inline = TRUE
+                  )
+                  
+                ),
+                div(
                   uiOutput(ns("var1_select_td")),
                   uiOutput(ns("var2_select_td"))
                 ),
                 hr(),
                 div(
                   p("description text"),
-                  # materialSwitch(
-                  #   inputId = ns("switch_com_td"),
-                  #   label = "comparison"
-                  # ),
                   checkboxInput(
                     inputId = ns("check_able_td"),
                     label = "comparison",
                     value = FALSE
                   ),
                   uiOutput(ns("var3_select_td"))
-                ),
-                # div(
-                #   colorSelectorInput(
-                #     inputId = "mycolor1", label = "Pick a color :",
-                #     choices = c("steelblue", "cornflowerblue",
-                #                 "firebrick", "palegoldenrod",
-                #                 "forestgreen")
-                #   ),
-                # )
+                )
               )
             ),
             column( # Result
               width = 9,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
+                style = "background:#ffffff; height:500px",
                 div(
-                  fluidRow(
-                    column(
-                      width = 2,
-                      offset = 10,
-                      style = "text-align:right",
-                      dropdownButton(
-                        inputId = ns("td_config_drop"),
-                        label =  NULL,
-                        circle = TRUE,
-                        status = "primary",
-                        icon =  icon("gear"),
-                        width = "30%",
-                        size = "sm",
-                        h3("hola")
+                  style = "margin-bottom: 10px",
+                  dropdownButton(
+                    inputId = ns("td_config_drop"),
+                    label =  NULL,
+                    circle = FALSE,
+                    status = "primary",
+                    icon =  icon("gear"),
+                    width = "35%",
+                    size = "sm",
+                    div(
+                      style = "text-align: justify; color:#272829; font-size:9pt;",
+                      h4("Chart settings", style = "text-align:center"),
+                      colorSelectorInput(
+                        inputId = ns("col_line1"),
+                        label = "col 1",
+                        choices = c("steelblue", "cornflowerblue",
+                                    "firebrick", "palegoldenrod",
+                                    "forestgreen"),
+                        mode = "radio"
+                      ),
+                      colorSelectorInput(
+                        inputId = ns("col_line2"),
+                        label = "col 2",
+                        choices = c("red", "cornflowerblue",
+                                    "firebrick", "palegoldenrod",
+                                    "forestgreen")
+                      ),
+                      selectInput(
+                        inputId = ns("picker_shape_point"), 
+                        label = "Dots shape", 
+                        width = "25%",
+                        choices = c("1" = 16, "2" = 17, "3" = 15, "4" = 4, "5" = 3),
+                        selected = "1"
+                      ),
+                      selectInput(
+                        inputId = ns("picker_shape_point2"), 
+                        label = "Dots shape", 
+                        width = "25%",
+                        choices = c("1" = 16, "2" = 17, "3" = 15, "4" = 4, "5" = 3),
+                        selected = "1"
+                      ),
+                      selectInput(
+                        inputId = ns("picker_size_line"), 
+                        label = "Size", 
+                        width = "25%",
+                        choices = c("0.5" = 0.5, "1" = 1, "1.5" = 1.5),
+                        selected = 0.5
                       )
                     )
                   )
                 ),
                 div(
-                  style = "height:500px",
-                  plotOutput(ns("td_plot"))
+                  plotOutput(ns("td_plot")),
+                  uiOutput(ns("slider_x"))
                 )
               )
             )
@@ -182,6 +213,9 @@ solution_area_server<-function(input, output,session){
   csv_names <- reactiveVal()
   csv_data <- reactiveVal()
   
+  # JS events
+  shinyjs::hide("td_config_drop")
+  
   # Load CSV area
   output$data_from <- DT::renderDT({
     if(is.null(input$file_input_csv)){
@@ -204,14 +238,13 @@ solution_area_server<-function(input, output,session){
         tryCatch(
           {
             session$userData$DATA_CSV <- read.csv(input$file_input_csv$datapath, sep = input$sep, fileEncoding = "UTF-8-BOM")
+            csv_names(names(session$userData$DATA_CSV))
+            csv_data(session$userData$DATA_CSV)
           },
           error = function(e) {
             stop(safeError(e))
           }
         )
-        
-        csv_names(names(session$userData$DATA_CSV))
-        csv_data(session$userData$DATA_CSV)
         
         output$data_title <- renderUI({
           h4("texto")
@@ -221,7 +254,7 @@ solution_area_server<-function(input, output,session){
           DT::datatable(
             extensions = "Scroller",
             editable = "cell",
-            options = list(responsive = TRUE, scrollY = 390, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
+            options = list(responsive = TRUE, scrollY = 360, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
             selection = list(mode = "single"),
             class = "display compact",
             rownames = FALSE
@@ -247,7 +280,7 @@ solution_area_server<-function(input, output,session){
     tagList(
       pickerInput(
         inputId = ns("picker_var1_td"),
-        label = "A label",
+        label = "x",
         choices = csv_names()
       )
     )
@@ -257,7 +290,7 @@ solution_area_server<-function(input, output,session){
     tagList(
       pickerInput(
         inputId = ns("picker_var2_td"),
-        label = "A label",
+        label = "y",
         choices = csv_names()
       )
     )
@@ -267,38 +300,169 @@ solution_area_server<-function(input, output,session){
     tagList(
       pickerInput(
         inputId = ns("picker_var3_td"),
-        label = "A label",
-        choices = csv_names(),
-        selected = NULL
+        label = "y2",
+        choices = csv_names()
       )
     )
   })
   
+  output$slider_x <- renderUI({
+    # sliderTextInput(
+    #   inputId = ns("x_slider_x"),
+    #   label = "Null",
+    #   grid = TRUE,
+    #   force_edges = TRUE,
+    #   choices = csv_data()
+    # )
+    # sliderTextInput(
+    #   inputId = ns("ddd"),
+    #   label = NULL,
+    #   force_edges = TRUE,
+    #   grid = TRUE,
+    #   choices = c("hola","chao", "adios", "comer"),
+    #   min = "hola",
+    #   max = "comer",
+    #   value = c("chao", "adios")
+    # )
+    # sliderInput(
+    #   "slider2", label = NULL, min = 0,
+    #   max = 100, value = c(40, 60)
+    # )
+  })
+
   observe({
+    
     output$td_plot <- renderPlot({
       
       if(is.null(input$picker_var1_td)){
+        
         return(NULL)
+        
       }else{
-        if(input$check_able_td == FALSE){
-          ggplot(csv_data()) + geom_line(mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group=1), color = "red") 
-        }else{
-          ggplot(csv_data()) + geom_line(mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group=1), color = "red") + geom_line(aes_string(x = input$picker_var1_td, y = input$picker_var3_td, group=2), color = "blue")
-        }
+        
+        shinyjs::show("td_config_drop")
+        
+        switch(
+          EXPR = input$radio_geom_type,
+          "style_a" = {
+            if(input$check_able_td == FALSE){
+              ggplot(
+                csv_data(),
+                mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td)
+              ) + 
+                geom_point(
+                  shape = as.numeric(input$picker_shape_point), 
+                  size = 3, 
+                  color = input$col_line1
+                )
+            }else{
+              ggplot(
+                csv_data(),
+                mapping = aes_string(x = input$picker_var1_td)
+              ) + 
+                geom_point(
+                  aes_string(y = input$picker_var2_td),
+                  shape = as.numeric(input$picker_shape_point), 
+                  size = 3, 
+                  color = input$col_line1
+                ) +
+                geom_point(
+                  aes_string(y = input$picker_var3_td),
+                  shape = as.numeric(input$picker_shape_point2), 
+                  size = 3, 
+                  color = input$col_line2
+                ) +
+                labs(
+                  x = input$picker_var1_td, 
+                  y =  sprintf("%s - %s", input$picker_var2_td, input$picker_var3_td)
+                )
+            }
+          },
+          "style_b" = {
+            if(input$check_able_td == FALSE){
+              ggplot(
+                csv_data(),
+                mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group = 1)
+              ) +
+                geom_line(
+                  color = input$col_line1,
+                  size = as.numeric(input$picker_size_line)
+                )
+            }else{
+              ggplot(
+                csv_data(),
+                mapping = aes_string(x = input$picker_var1_td)
+              ) +
+                geom_line(
+                  mapping = aes_string(y = input$picker_var2_td, group = 1),
+                  color = input$col_line1,
+                  size = as.numeric(input$picker_size_line)
+                ) +
+                geom_line(
+                  mapping = aes_string(y = input$picker_var3_td, group = 2),
+                  color = input$col_line2,
+                  size = as.numeric(input$picker_size_line)
+                ) +
+                labs(
+                  x = input$picker_var1_td, 
+                  y =  sprintf("%s - %s", input$picker_var2_td, input$picker_var3_td)
+                )
+            }
+          },
+          "style_c" = {
+            if(input$check_able_td == FALSE){
+              ggplot(
+                csv_data(),
+                mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td)
+              ) +
+                geom_line(
+                  aes_string(group = 1),
+                  color = input$col_line1,
+                  size = as.numeric(input$picker_size_line)
+                ) +
+                geom_point(
+                  shape = as.numeric(input$picker_shape_point), 
+                  size = 3, 
+                  color = input$col_line1
+                )
+            }else{
+              ggplot(
+                csv_data(),
+                mapping = aes_string(x = input$picker_var1_td)
+              ) +
+                geom_line(
+                  aes_string(y = input$picker_var2_td, group = 1),
+                  color = input$col_line1,
+                  size = as.numeric(input$picker_size_line)
+                ) +
+                geom_point(
+                  aes_string(y = input$picker_var2_td),
+                  shape = as.numeric(input$picker_shape_point), 
+                  size = 3, 
+                  color = input$col_line1
+                ) + 
+                geom_line(
+                  aes_string(y = input$picker_var3_td, group = 2),
+                  color = input$col_line2,
+                  size = as.numeric(input$picker_size_line)
+                ) +
+                geom_point(
+                  aes_string(y = input$picker_var3_td),
+                  shape = as.numeric(input$picker_shape_point2), 
+                  size = 3, 
+                  color = input$col_line2
+                ) +
+                labs(
+                  x = input$picker_var1_td, 
+                  y =  sprintf("%s - %s", input$picker_var2_td, input$picker_var3_td)
+                )
+            }
+            
+          }
+        )
       }
+      
     })
   })
-  
-  # observe({
-  #   
-  #     if(input$check_able_td == TRUE){
-  #       output$td_plot <- renderPlot({
-  #       ggplot_graph <<- ggplot_graph + geom_line(aes_string(x = input$picker_var1_td, y = input$picker_var3_td, group=1), color = "blue")
-  #       ggplot_graph
-  #       })
-  #     }else{
-  #       return(NULL)
-  #     }
-  #   
-  # })
+
 }
