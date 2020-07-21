@@ -59,6 +59,7 @@ solution_area_ui<-function(id){
                 div(
                   uiOutput(ns("data_title"))
                 ),
+                hr(),
                 div(
                   style = "font-size: 8.5pt;",
                   DT::DTOutput(ns("data_from"))
@@ -160,6 +161,7 @@ solution_area_ui<-function(id){
                     )
                   )
                 ),
+                hr(),
                 div(
                   plotOutput(ns("td_plot"))
                 )
@@ -179,7 +181,7 @@ solution_area_ui<-function(id){
                   p("descripcion"),
                 ),
                 div(
-                  
+                  uiOutput(ns("var4_select_td")),
                 )
               )
             ),
@@ -188,11 +190,38 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
                 div(
-                  uiOutput(ns("fgfgfgfgfg")),
-                  h1("hola")
+                  style = "margin-bottom: 10px",
+                  dropdownButton(
+                    inputId = ns("td_config_drop1"),
+                    label =  NULL,
+                    circle = FALSE,
+                    status = "primary",
+                    icon =  icon("gear"),
+                    width = "35%",
+                    size = "sm",
+                    div(
+                      style = "text-align: justify; color:#272829; font-size:9pt;",
+                      h4("Chart settings", style = "text-align:center"),
+                    )
+                  )
                 ),
+                hr(),
                 div(
-                  
+                  fluidRow(
+                    column(
+                      width = 4,
+                      plotOutput(ns("plot_hist"))
+                    ),
+                    column(
+                      width = 4,
+                      style = "border-left: solid silver 1px; border-right: solid silver 1px",
+                      plotOutput(ns("plot_box"))
+                    ),
+                    column(
+                      width = 4,
+                      plotOutput(ns("plot_vio"))
+                    )
+                  )
                 )
               )
             )
@@ -273,9 +302,11 @@ solution_area_server<-function(input, output,session){
   # Data var reactive
   csv_names <- reactiveVal()
   csv_data <- reactiveVal()
+  csv_names_num <- reactiveVal()
   
   # JS events
   shinyjs::hide("td_config_drop")
+  shinyjs::hide("td_config_drop1")
   
   # Load CSV area
   output$data_from <- DT::renderDT({
@@ -298,9 +329,11 @@ solution_area_server<-function(input, output,session){
         
         tryCatch(
           {
-            session$userData$DATA_CSV <- read.csv(input$file_input_csv$datapath, sep = input$sep, fileEncoding = "UTF-8-BOM")
+            session$userData$DATA_CSV <- read.csv(input$file_input_csv$datapath, sep = input$sep, dec = ".", fileEncoding = "UTF-8-BOM")
+            
             csv_names(names(session$userData$DATA_CSV))
             csv_data(session$userData$DATA_CSV)
+            csv_names_num(names(session$userData$DATA_CSV %>% select_if(is.numeric)))
           },
           error = function(e) {
             stop(safeError(e))
@@ -336,7 +369,8 @@ solution_area_server<-function(input, output,session){
     replaceData(proxyData, session$userData$DATA_CSV, resetPaging = FALSE, rownames = FALSE)
     csv_data(session$userData$DATA_CSV)
   })
-
+  
+  # Vareable selector
   output$var1_select_td <- renderUI({
     tagList(
       pickerInput(
@@ -366,6 +400,16 @@ solution_area_server<-function(input, output,session){
       )
     )
   })
+  
+  output$var4_select_td <- renderUI({
+    tagList(
+      pickerInput(
+        inputId = ns("picker_var4_td"),
+        label = "y1",
+        choices = csv_names_num()
+      )
+    )
+  })
 
   observe({
     
@@ -384,7 +428,7 @@ solution_area_server<-function(input, output,session){
           "style_a" = {
             if(input$check_able_td == FALSE){
               ggplot(
-                csv_data(),
+                data = csv_data(),
                 mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td)
               ) + 
                 geom_point(
@@ -395,17 +439,17 @@ solution_area_server<-function(input, output,session){
                 theme_minimal()
             }else{
               ggplot(
-                csv_data(),
+                data = csv_data(),
                 mapping = aes_string(x = input$picker_var1_td)
               ) + 
                 geom_point(
-                  aes_string(y = input$picker_var2_td),
+                  mapping = aes_string(y = input$picker_var2_td),
                   shape = as.numeric(input$picker_shape_point), 
                   size = 3, 
                   color = input$col_line1
                 ) +
                 geom_point(
-                  aes_string(y = input$picker_var3_td),
+                  mapping = aes_string(y = input$picker_var3_td),
                   shape = as.numeric(input$picker_shape_point2), 
                   size = 3, 
                   color = input$col_line2
@@ -414,13 +458,13 @@ solution_area_server<-function(input, output,session){
                   x = input$picker_var1_td, 
                   y =  sprintf("%s - %s", input$picker_var2_td, input$picker_var3_td)
                 ) + 
-                theme_minimal()
+                theme_minimal() 
             }
           },
           "style_b" = {
             if(input$check_able_td == FALSE){
               ggplot(
-                csv_data(),
+                data = csv_data(),
                 mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group = 1)
               ) +
                 geom_line(
@@ -430,7 +474,7 @@ solution_area_server<-function(input, output,session){
                 theme_minimal()
             }else{
               ggplot(
-                csv_data(),
+                data = csv_data(),
                 mapping = aes_string(x = input$picker_var1_td)
               ) +
                 geom_line(
@@ -453,11 +497,11 @@ solution_area_server<-function(input, output,session){
           "style_c" = {
             if(input$check_able_td == FALSE){
               ggplot(
-                csv_data(),
+                data = csv_data(),
                 mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td)
               ) +
                 geom_line(
-                  aes_string(group = 1),
+                  mapping =aes_string(group = 1),
                   color = input$col_line1,
                   size = as.numeric(input$picker_size_line)
                 ) +
@@ -469,27 +513,27 @@ solution_area_server<-function(input, output,session){
                 theme_minimal()
             }else{
               ggplot(
-                csv_data(),
+                data = csv_data(),
                 mapping = aes_string(x = input$picker_var1_td)
               ) +
                 geom_line(
-                  aes_string(y = input$picker_var2_td, group = 1),
+                  mapping =aes_string(y = input$picker_var2_td, group = 1),
                   color = input$col_line1,
                   size = as.numeric(input$picker_size_line)
                 ) +
                 geom_point(
-                  aes_string(y = input$picker_var2_td),
+                  mapping =aes_string(y = input$picker_var2_td),
                   shape = as.numeric(input$picker_shape_point), 
                   size = 3, 
                   color = input$col_line1
                 ) + 
                 geom_line(
-                  aes_string(y = input$picker_var3_td, group = 2),
+                  mapping =aes_string(y = input$picker_var3_td, group = 2),
                   color = input$col_line2,
                   size = as.numeric(input$picker_size_line)
                 ) +
                 geom_point(
-                  aes_string(y = input$picker_var3_td),
+                  mapping = aes_string(y = input$picker_var3_td),
                   shape = as.numeric(input$picker_shape_point2), 
                   size = 3, 
                   color = input$col_line2
@@ -506,6 +550,66 @@ solution_area_server<-function(input, output,session){
       }
       
     })
+  })
+  
+  observe({
+    
+    output$plot_hist <- renderPlot({
+      
+      if(is.null(input$picker_var4_td)){
+
+        return(NULL)
+
+      }else{
+        
+        shinyjs::show("td_config_drop1")
+        
+        ggplot(
+          data = csv_data(),
+          mapping = aes_string(x = input$picker_var4_td)
+        ) +
+          geom_histogram(
+            color="black", 
+            fill="white"
+          ) +
+          theme_minimal()
+      }
+    })
+    
+    output$plot_box <- renderPlot({
+      
+      if(is.null(input$picker_var4_td)){
+        
+        return(NULL)
+        
+      }else{
+        
+        ggplot(
+          data = csv_data(),
+          mapping = aes_string(y = input$picker_var4_td)
+        ) +
+          geom_boxplot() +
+          theme_minimal()
+      }
+    })
+    
+    # output$plot_vio <- renderPlot({
+    #   
+    #   if(is.null(input$picker_var4_td)){
+    #     
+    #     return(NULL)
+    #     
+    #   }else{
+    #     
+    #     ggplot(
+    #       data = csv_data(),
+    #       mapping = aes_string(y = input$picker_var4_td)
+    #     ) +
+    #       geom_violin() +
+    #       theme_minimal()
+    #   }
+    # })
+    
   })
 
 }
