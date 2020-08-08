@@ -12,7 +12,7 @@ solution_area_ui<-function(id){
     column(
       width = 12,
       tabsetPanel(
-        type = "tabs",
+        type = "pills",
         tabPanel( 
           "Data Viewer", # Section 1
           fluidRow(
@@ -25,25 +25,24 @@ solution_area_ui<-function(id){
                     width = 12,
                     h4("Data Viewer"),
                     p("descripcion"),
-                    br(),
                     radioButtons(
                       ns("sep"), 
-                      label = "Separator",
+                      label = NULL,
                       choices = c(
                         Comma = ",",
                         Semicolon = ";"),
-                      selected = ","
+                      selected = ",",
+                      inline = TRUE
                     ),
                     fileInput(
                       inputId = ns("file_input_csv"),
                       width = "100%",
-                      label = "file",
+                      label = NULL,
                       buttonLabel = span(class="ti-file", style = "font-size:22pt"),
                       accept = c("text/csv","text/comma-separated-values",".csv")
                     )
                   )
                 ),
-                hr(),
                 fluidRow(
                   column(
                     width = 12,
@@ -56,10 +55,6 @@ solution_area_ui<-function(id){
               width = 9,
               material_card(
                 style = "background:#ffffff; height:500px; color:#272829",
-                div(
-                  uiOutput(ns("data_title"))
-                ),
-                hr(),
                 div(
                   style = "font-size: 8.5pt;",
                   DT::DTOutput(ns("data_from"))
@@ -83,25 +78,13 @@ solution_area_ui<-function(id){
                   radioButtons(
                     inputId = ns("radio_geom_type"), 
                     label = "Type of graphic", 
-                    choices = c("Dot" = "style_a", "Line" = "style_b", "Dot & Line" = "style_c"),
+                    choices = c("Dot" = "style_a", "Line" = "style_b", "Dot and Line" = "style_c"),
                     selected = "style_a",
                     inline = TRUE
                   )
-                  
                 ),
                 div(
-                  uiOutput(ns("var1_select_td")),
-                  uiOutput(ns("var2_select_td"))
-                ),
-                hr(),
-                div(
-                  p("description text"),
-                  checkboxInput(
-                    inputId = ns("check_able_td"),
-                    label = "comparison",
-                    value = FALSE
-                  ),
-                  uiOutput(ns("var3_select_td"))
+                  uiOutput(ns("var1_select_td"))
                 )
               )
             ),
@@ -110,7 +93,6 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; height:500px",
                 div(
-                  style = "margin-bottom: 10px",
                   dropdownButton(
                     inputId = ns("td_config_drop"),
                     label =  NULL,
@@ -181,7 +163,14 @@ solution_area_ui<-function(id){
                   p("descripcion"),
                 ),
                 div(
-                  uiOutput(ns("var4_select_td")),
+                  radioButtons(
+                    inputId = ns("radio_geom_type2"), 
+                    label = NULL, 
+                    choices = c("Histogram" = "graph_a", "Boxplot" = "graph_b", "Violin" = "graph_c"),
+                    selected = "graph_a",
+                    inline = TRUE
+                  )  ,
+                  uiOutput(ns("var2_select_td")),
                 )
               )
             ),
@@ -190,7 +179,6 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
                 div(
-                  style = "margin-bottom: 10px",
                   dropdownButton(
                     inputId = ns("td_config_drop1"),
                     label =  NULL,
@@ -209,17 +197,13 @@ solution_area_ui<-function(id){
                 div(
                   fluidRow(
                     column(
-                      width = 4,
-                      plotOutput(ns("plot_hist"))
+                      width = 6,
+                      style = " border-right: solid silver 1px",
+                      plotOutput(ns("plot_hbv"))
                     ),
                     column(
-                      width = 4,
-                      style = "border-left: solid silver 1px; border-right: solid silver 1px",
-                      plotOutput(ns("plot_box"))
-                    ),
-                    column(
-                      width = 4,
-                      plotOutput(ns("plot_vio"))
+                      width = 6,
+                      plotOutput(ns("plot_hbv_comp"))
                     )
                   )
                 )
@@ -318,11 +302,7 @@ solution_area_server<-function(input, output,session){
       data_ext <- tools::file_ext(toString(input$file_input_csv))
       
       if(data_ext != "csv"){
-        
-        output$data_title <- renderUI({
-          h4("incorrecto", style = "color:red")
-        })
-        
+
         return((NULL))
         
       }else{
@@ -339,16 +319,12 @@ solution_area_server<-function(input, output,session){
             stop(safeError(e))
           }
         )
-        
-        output$data_title <- renderUI({
-          h4("texto")
-        })
-        
+
         session$userData$DATA_CSV %>%
           DT::datatable(
             extensions = "Scroller",
             editable = "cell",
-            options = list(responsive = TRUE, scrollY = 360, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
+            options = list(responsive = TRUE, scrollY = 410, scrollX =TRUE, scroller = TRUE, searching = FALSE, dom = "ftip"),
             selection = list(mode = "single"),
             class = "display compact",
             rownames = FALSE
@@ -377,6 +353,25 @@ solution_area_server<-function(input, output,session){
         inputId = ns("picker_var1_td"),
         label = "x",
         choices = csv_names()
+      ),
+      hr(),
+      pickerInput(
+        inputId = ns("picker_var2_td"),
+        label = "y",
+        choices = csv_names()
+      ),
+      div(
+        p("description text"),
+        checkboxInput(
+          inputId = ns("check_able_td"),
+          label = "comparison",
+          value = FALSE
+        )
+      ),
+      pickerInput(
+        inputId = ns("picker_var3_td"),
+        label = "y",
+        choices = csv_names()
       )
     )
   })
@@ -384,32 +379,19 @@ solution_area_server<-function(input, output,session){
   output$var2_select_td <- renderUI({
     tagList(
       pickerInput(
-        inputId = ns("picker_var2_td"),
-        label = "y",
-        choices = csv_names()
-      )
-    )
-  })
-  
-  output$var3_select_td <- renderUI({
-    tagList(
-      pickerInput(
-        inputId = ns("picker_var3_td"),
-        label = "y2",
-        choices = csv_names()
-      )
-    )
-  })
-  
-  output$var4_select_td <- renderUI({
-    tagList(
-      pickerInput(
         inputId = ns("picker_var4_td"),
         label = "y1",
         choices = csv_names_num()
+      ),
+      pickerInput(
+        inputId = ns("picker_var5_td"),
+        label = "y2",
+        choices = csv_names_num()
       )
+      
     )
   })
+  
 
   observe({
     
@@ -553,63 +535,76 @@ solution_area_server<-function(input, output,session){
   })
   
   observe({
-    
-    output$plot_hist <- renderPlot({
+    output$plot_hbv <- renderPlot({ 
       
       if(is.null(input$picker_var4_td)){
-
+        
         return(NULL)
-
+        
       }else{
         
         shinyjs::show("td_config_drop1")
         
-        ggplot(
-          data = csv_data(),
-          mapping = aes_string(x = input$picker_var4_td)
-        ) +
-          geom_histogram(
-            color="black", 
-            fill="white"
-          ) +
-          theme_minimal()
+        switch(
+          EXPR = input$radio_geom_type2,
+          "graph_a" = {
+            ggplot(
+              data = csv_data(),
+              mapping = aes_string(x = input$picker_var4_td)
+            ) +
+              geom_histogram(
+                color="black", 
+                fill="white"
+              ) +
+              theme_minimal()
+          },
+          "graph_b" = {
+            ggplot(
+              data = csv_data(),
+              mapping = aes_string(x = input$picker_var5_td)
+            ) +
+              geom_boxplot() +
+              theme_minimal()
+          }
+        )
+        
       }
     })
     
-    output$plot_box <- renderPlot({
+    output$plot_hbv_comp <- renderPlot({ 
       
-      if(is.null(input$picker_var4_td)){
+      if(is.null(input$picker_var5_td)){
         
         return(NULL)
         
       }else{
         
-        ggplot(
-          data = csv_data(),
-          mapping = aes_string(y = input$picker_var4_td)
-        ) +
-          geom_boxplot() +
-          theme_minimal()
+        shinyjs::show("td_config_drop1")
+        
+        switch(
+          EXPR = input$radio_geom_type2,
+          "graph_a" = {
+            ggplot(
+              data = csv_data(),
+              mapping = aes_string(x = input$picker_var5_td)
+            ) +
+              geom_histogram(
+                color="black", 
+                fill="white") +
+              theme_minimal()
+          },
+          "graph_b" = {
+            ggplot(
+              data = csv_data(),
+              mapping = aes_string(x =  input$picker_var5_td)
+            ) +
+              geom_boxplot() +
+              theme_minimal()
+          }
+        )
+        
       }
     })
-    
-    # output$plot_vio <- renderPlot({
-    #   
-    #   if(is.null(input$picker_var4_td)){
-    #     
-    #     return(NULL)
-    #     
-    #   }else{
-    #     
-    #     ggplot(
-    #       data = csv_data(),
-    #       mapping = aes_string(y = input$picker_var4_td)
-    #     ) +
-    #       geom_violin() +
-    #       theme_minimal()
-    #   }
-    # })
-    
   })
 
 }
