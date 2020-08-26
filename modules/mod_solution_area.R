@@ -157,7 +157,7 @@ solution_area_ui<-function(id){
             column(
               width = 3,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:300px",
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Descriptive Graphics"),
                   p("descripcion"),
@@ -380,15 +380,19 @@ solution_area_server<-function(input, output,session){
     tagList(
       pickerInput(
         inputId = ns("picker_var4_td"),
-        label = "y1",
+        label = "x1",
         choices = csv_names_num()
       ),
       pickerInput(
         inputId = ns("picker_var5_td"),
-        label = "y2",
+        label = "x2",
         choices = csv_names_num()
+      ),
+      pickerInput(
+        inputId = ns("picker_var6_td"),
+        label = "y2",
+        choices = csv_names()
       )
-      
     )
   })
   
@@ -561,9 +565,17 @@ solution_area_server<-function(input, output,session){
           "graph_b" = {
             ggplot(
               data = csv_data(),
-              mapping = aes_string(x = input$picker_var5_td)
+              mapping = aes_string(x = input$picker_var4_td)
             ) +
               geom_boxplot() +
+              theme_minimal()
+          },
+          "graph_c" = {
+            ggplot(
+              data = csv_data(),
+              mapping = aes_string(x = input$picker_var6_td, y = input$picker_var4_td )
+            ) +
+              geom_violin() +
               theme_minimal()
           }
         )
@@ -599,6 +611,14 @@ solution_area_server<-function(input, output,session){
               mapping = aes_string(x =  input$picker_var5_td)
             ) +
               geom_boxplot() +
+              theme_minimal()
+          },
+          "graph_c" = {
+            ggplot(
+              data = csv_data(),
+              mapping = aes_string(x = input$picker_var6_td, y = input$picker_var5_td)
+            ) +
+              geom_violin() +
               theme_minimal()
           }
         )
