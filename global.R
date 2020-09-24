@@ -22,6 +22,7 @@ library(ggplot2)
 library(readr)
 library(dplyr)
 library(colourpicker)
+library(xts)
 
 # Load modules -----
 source("modules/mod_header_area.R")

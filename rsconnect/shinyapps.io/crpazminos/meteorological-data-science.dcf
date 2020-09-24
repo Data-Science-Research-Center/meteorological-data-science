@@ -4,9 +4,9 @@ username:
 account: crpazminos
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 2457997
-bundleId: 3410258
+appId: 2712382
+bundleId: 3561526
 url: https://crpazminos.shinyapps.io/meteorological-data-science/
-when: 1595207798.67001
+when: 1598480477.44401
 asMultiple: FALSE
 asStatic: FALSE

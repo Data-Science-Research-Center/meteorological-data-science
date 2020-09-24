@@ -24,25 +24,26 @@ solution_area_ui<-function(id){
                   column(
                     width = 12,
                     h4("Data Viewer"),
-                    p("descripcion"),
                     radioButtons(
                       ns("sep"), 
-                      label = NULL,
+                      label = "Separator",
                       choices = c(
                         Comma = ",",
                         Semicolon = ";"),
                       selected = ",",
-                      inline = TRUE
+                      inline = FALSE
                     ),
                     fileInput(
                       inputId = ns("file_input_csv"),
                       width = "100%",
-                      label = NULL,
+                      label = "Document",
+                      multiple = TRUE,
                       buttonLabel = span(class="ti-file", style = "font-size:22pt"),
                       accept = c("text/csv","text/comma-separated-values",".csv")
                     )
                   )
                 ),
+                hr(),
                 fluidRow(
                   column(
                     width = 12,
@@ -63,17 +64,37 @@ solution_area_ui<-function(id){
             )
           )
         ),
-        tabPanel(
-          "Temporary Graphics", # Section 2 
+        tabPanel( #-------------------------------------------------------------
+          "Temporary Graphics", # Section 2
+          fluidRow(
+            column(
+              width = 3,
+              material_card(
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:300px",
+                div(
+                  h4("Titulo"),
+                )
+              )
+            ),
+            column(
+              width = 9,
+              material_card(
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
+                div(
+                  highchartOutput(outputId = ns("ho_plot"))
+                )
+              )
+            )
+          )
+        ),
+        tabPanel( #-------------------------------------------------------------
+          "Data Relationships", # Section 2 
           fluidRow(
             column( # Menu
               width = 3,
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
-                div(
-                  h4("Temporary Graphics"),
-                  p("descripcion"),
-                ),
+                h4("Temporary Graphics"),
                 div(
                   radioButtons(
                     inputId = ns("radio_geom_type"), 
@@ -287,6 +308,7 @@ solution_area_server<-function(input, output,session){
   csv_names <- reactiveVal()
   csv_data <- reactiveVal()
   csv_names_num <- reactiveVal()
+  csv_names_cat <- reactiveVal()
   
   # JS events
   shinyjs::hide("td_config_drop")
@@ -311,12 +333,17 @@ solution_area_server<-function(input, output,session){
           {
             session$userData$DATA_CSV <- read.csv(input$file_input_csv$datapath, sep = input$sep, dec = ".", fileEncoding = "UTF-8-BOM")
             
-            csv_names(names(session$userData$DATA_CSV))
             csv_data(session$userData$DATA_CSV)
+            
+            csv_names(names(session$userData$DATA_CSV))
             csv_names_num(names(session$userData$DATA_CSV %>% select_if(is.numeric)))
+            csv_names_cat(names(session$userData$DATA_CSV %>% select_if(is.character)))
+            
           },
           error = function(e) {
+            
             stop(safeError(e))
+            
           }
         )
 
@@ -351,13 +378,11 @@ solution_area_server<-function(input, output,session){
     tagList(
       pickerInput(
         inputId = ns("picker_var1_td"),
-        label = "x",
+        label = "Variables",
         choices = csv_names()
       ),
-      hr(),
       pickerInput(
         inputId = ns("picker_var2_td"),
-        label = "y",
         choices = csv_names()
       ),
       div(
@@ -396,7 +421,26 @@ solution_area_server<-function(input, output,session){
     )
   })
   
-
+  dreact <- reactive({
+  #   di <- "2020-5-26"
+  #   df <- "2020-5-28"
+  #   date <- seq(di, by = "1 months", length.out = 144)
+    date <- as.Date(c("2020-1-1","2020-1-2","2020-1-3","2020-1-4","2020-1-5","2020-1-6","2020-1-7","2020-1-8","2020-1-9","2020-1-10","2020-1-11","2020-1-12","2020-1-13","2020-1-14","2020-1-15","2020-1-16"))
+    # date <- as.Date(c("2020-01-20","2020-01-21","2020-01-22","2020-01-23","2020-01-24","2020-01-25","2020-01-26","2020-01-27"))
+    app <- xts(as.vector(csv_data()),date)
+    # app [paste0("2020-1-1","/","2020-1-17")]
+  #   app <- xts(as.vector(csv_names()), date)
+  #   app[paste0(di, "/", df)]
+  })
+  
+  observe({
+    
+    output$ho_plot <- renderHighchart({
+       hchart(dreact())
+    })
+    
+  })
+  
   observe({
     
     output$td_plot <- renderPlot({
@@ -484,17 +528,24 @@ solution_area_server<-function(input, output,session){
             if(input$check_able_td == FALSE){
               ggplot(
                 data = csv_data(),
-                mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td)
+                mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td, colour = "Humedad.Relativa.Aire")
+                
               ) +
-                geom_line(
-                  mapping =aes_string(group = 1),
-                  color = input$col_line1,
-                  size = as.numeric(input$picker_size_line)
-                ) +
                 geom_point(
-                  shape = as.numeric(input$picker_shape_point), 
-                  size = 3, 
-                  color = input$col_line1
+                  # aes(
+                  #   
+                  # )
+                  # shape = as.numeric(input$picker_shape_point), 
+                  # size = 3, 
+                  # color = input$col_line1
+                ) +
+                geom_line(
+                  # aes(
+                  #   group = "Fecha"
+                  # )
+                  # mapping =aes_string(group = 1),
+                  # color = input$col_line1,
+                  # size = as.numeric(input$picker_size_line)
                 ) +
                 theme_minimal()
             }else{
