@@ -1,4 +1,4 @@
-Fecha,Hora,Humedad Relativa Aire,Presion Atmosferica,Temperatura Aire,Viento Direccion,Viento Velocidad,Precipitacion
+date,time,Humedad Relativa Aire,Presion Atmosferica,Temperatura Aire,Viento Direccion,Viento Velocidad,Precipitacion
 2020-5-26,0:00,95,499.8,12.2,149,2.7,0
 2020-5-26,1:00,97,499.8,11.7,104,1.2,0
 2020-5-26,2:00,97,499.8,11.5,262,1,0
