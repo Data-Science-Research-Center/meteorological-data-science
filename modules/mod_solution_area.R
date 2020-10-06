@@ -148,7 +148,7 @@ solution_area_ui<-function(id){
             )
           )
         ),
-        tabPanel( # Comparative Time Charts - Section 4
+        tabPanel( # Descriptive Charts - Section 4
           "Descriptive Charts", 
           fluidRow(
             column(
@@ -163,8 +163,9 @@ solution_area_ui<-function(id){
                     label = "Type of chart",
                     choices = c(
                       "Boxplot chart" = "op1",
-                      "Violinplot chart" = "op2"),
-                    selected = "op1m",
+                      "Violinplot chart" = "op2",
+                      "Histogram chart" = "op3"),
+                    selected = "op1",
                     inline = FALSE
                   ),
                   uiOutput(ns("select_descriptive"))
@@ -176,8 +177,11 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
                 div(
-                  plotOutput(ns("descriptive_graph"))
-
+                  plotOutput(
+                    ns("descriptive_graph"),
+                    width = "100%",
+                    height = "460px"
+                  )
                 )
               )
             )
@@ -417,7 +421,8 @@ solution_area_server<-function(input, output,session){
 
             tempo_app_multi1() %>%
               hchart(
-                type = "line"
+                type = "line",
+                color = "green"
               )
             
           },
@@ -426,7 +431,8 @@ solution_area_server<-function(input, output,session){
             
             tempo_app_multi1() %>%
               hchart(
-                type = "scatter"
+                type = "scatter",
+                 color = "green"
               )
 
           },
@@ -435,7 +441,8 @@ solution_area_server<-function(input, output,session){
 
             tempo_app_multi1() %>%
               hchart(
-                type = "column"
+                type = "column",
+                color = "green"
               )
 
           }
@@ -512,11 +519,68 @@ solution_area_server<-function(input, output,session){
   })
   
   
-  # observe({
-  #   
-  #   output$
-  #   
-  # })
+  # Decriptive charts section
+  observe({
+
+    output$descriptive_graph <- renderPlot({
+      
+      if(is.null(input$picker_descrip1)){
+        
+        return(NULL)
+        
+      }else{
+        
+        switch(
+          
+          EXPR = input$descriptive_chart,
+          "op1" = {
+            
+            ggplot(
+              data = data_csv(),
+            ) +
+              geom_boxplot(
+                mapping = aes_string(
+                  y =  input$picker_descrip1,
+                  colour = "date")
+              ) +
+              theme_minimal()
+            
+          },
+          "op2" = {
+            
+            ggplot(
+              data = data_csv(),
+            ) +
+              geom_violin(
+                mapping = aes_string(
+                  x =  input$picker_descrip1,
+                  y =  input$picker_descrip2,
+                  colour = "date")
+              ) +
+              theme_minimal()
+            
+          },
+          "op3" = {
+            
+            ggplot(
+              data = data_csv(),
+            ) +
+              geom_histogram(
+                mapping = aes_string(
+                  x =  input$picker_descrip1,
+                  fill = "date")
+              ) +
+              theme_minimal()
+          
+          }
+          
+        )
+        
+      }
+      
+    })
+
+  })
   
   # observe({
   #   
