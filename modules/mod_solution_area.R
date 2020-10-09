@@ -208,19 +208,37 @@ solution_area_ui<-function(id){
                 div(
                   fluidRow(
                     column(
-                      4,
+                      6,
                       h6("Pearson's Correlation Coefficient"),
                       verbatimTextOutput(ns("value_cor_pear"))
                     ),
                     column(
-                      4,
+                      6,
                       h6("Kendall's Correlation Coefficient"),
                       verbatimTextOutput(ns("value_cor_ken"))
-                    ),
+                    )
+                    
+                  ),
+                  br(),
+                  fluidRow(
                     column(
-                      4,
+                      6,
                       h6("Spearman's Correlation Coefficient"),
                       verbatimTextOutput(ns("value_cor_spear"))
+                    ),
+                    column(
+                      6,
+                      h6("Variance"),
+                      verbatimTextOutput(ns("value_v"))
+                    )
+                    
+                  ),
+                  br(),
+                  fluidRow(
+                    column(
+                      6,
+                      h6("Mean and Ranges"),
+                      verbatimTextOutput(ns("value_mr"))
                     )
                   )
                 )
@@ -292,7 +310,7 @@ solution_area_server<-function(input, output,session){
             
             numeric_names(names(session$userData$DATA_CSV %>% select_if(is.numeric))) # Reactive variable of numeric variable names
             
-            numeric_data(session$userData$DATA_CSV %>% select_if(is.numeric))
+            numeric_data(session$userData$DATA_CSV %>% select_if(is.numeric)) # Reactive vareable of numeric database
             
           },
           error = function(e) {
@@ -622,35 +640,83 @@ solution_area_server<-function(input, output,session){
 
   
   observe({
-
-    output$value_cor_pear <- renderPrint({
+    
+    if(is.null(input$var_analytic)){
       
-      cor(
-        x = numeric_data() %>% select(input$var_analytic), 
-        y = numeric_data() %>% select(input$var_analytic2),
-        method = "pearson"
-      )
-
-    })
+      return(NULL)
+      
+    }else{
+      
+      output$value_cor_pear <- renderPrint({
+        
+        cor(
+          x = numeric_data() %>% select(input$var_analytic), 
+          y = numeric_data() %>% select(input$var_analytic2),
+          method = "pearson"
+        )
+        
+      })
+      
+      output$value_cor_ken <- renderPrint({
+        
+        cor(
+          x = numeric_data() %>% select(input$var_analytic), 
+          y = numeric_data() %>% select(input$var_analytic2),
+          method = "kendall"
+        )
+        
+      })
+      
+      output$value_cor_spear <- renderPrint({
+        
+        cor(
+          x = numeric_data() %>% select(input$var_analytic), 
+          y = numeric_data() %>% select(input$var_analytic2),
+          method = "spearman"
+        )
+      })
+      
+    }
     
-    output$value_cor_ken <- renderPrint({
-
-      cor(
-        x = numeric_data() %>% select(input$var_analytic), 
-        y = numeric_data() %>% select(input$var_analytic2),
-        method = "kendall"
-      )
-
-    })
+  })
+  
+  observe({
     
-    output$value_cor_spear <- renderPrint({
-
-      cor(
-        x = numeric_data() %>% select(input$var_analytic), 
-        y = numeric_data() %>% select(input$var_analytic2),
-        method = "spearman"
-      )
-    })
+    if(is.null(input$var_analytic)){
+      
+      return(NULL)
+      
+    }else{
+      
+      output$value_mr <- renderPrint({
+        
+        summary(object = numeric_data() %>% select(input$var_analytic,input$var_analytic2) )
+      
+        
+      })
+      
+    }
+    
+  })
+  
+  observe({
+    
+    if(is.null(input$var_analytic)){
+      
+      return(NULL)
+      
+    }else{
+      
+      output$value_v <- renderPrint({
+        
+        var(
+          x = numeric_data() %>% select(input$var_analytic),
+          y = numeric_data() %>% select(input$var_analytic2)
+        )
+        
+      })
+      
+    }
     
   })
 
