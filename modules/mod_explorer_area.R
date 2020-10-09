@@ -96,7 +96,7 @@ explorer_area_server<- function(input, output, session) {
   select_data_csv <- reactive({
     req(selected_project())
     
-    path_json<-selected_project()$project_db_selected$projectData
+    path_json <- selected_project()$project_db_selected$projectData
     json_data <- fromJSON(txt = sprintf("%s",path_json), simplifyDataFrame = TRUE)
   })
   

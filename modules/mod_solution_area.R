@@ -196,8 +196,8 @@ solution_area_ui<-function(id){
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Analytical results", style = "text-align:center"),
-                  hr()
-
+                  hr(),
+                  uiOutput(ns("select_analytic"))
                 )
               )
             ),
@@ -206,7 +206,23 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
                 div(
-
+                  fluidRow(
+                    column(
+                      4,
+                      h6("Pearson's Correlation Coefficient"),
+                      verbatimTextOutput(ns("value_cor_pear"))
+                    ),
+                    column(
+                      4,
+                      h6("Kendall's Correlation Coefficient"),
+                      verbatimTextOutput(ns("value_cor_ken"))
+                    ),
+                    column(
+                      4,
+                      h6("Spearman's Correlation Coefficient"),
+                      verbatimTextOutput(ns("value_cor_spear"))
+                    )
+                  )
                 )
               )
             )
@@ -251,6 +267,7 @@ solution_area_server<-function(input, output,session){
   
   data_csv <- reactiveVal()
   numeric_names <- reactiveVal()
+  numeric_data <- reactiveVal()
   
   # Load CSV area
   output$data_from <- DT::renderDT({
@@ -274,6 +291,8 @@ solution_area_server<-function(input, output,session){
             data_csv(session$userData$DATA_CSV) # Reactive variable of the complete database
             
             numeric_names(names(session$userData$DATA_CSV %>% select_if(is.numeric))) # Reactive variable of numeric variable names
+            
+            numeric_data(session$userData$DATA_CSV %>% select_if(is.numeric))
             
           },
           error = function(e) {
@@ -584,241 +603,55 @@ solution_area_server<-function(input, output,session){
 
   })
   
-  # observe({
-  #   
-  #   output$td_plot <- renderPlot({
-  #     
-  #     if(is.null(input$picker_var1_td)){
-  #       
-  #       return(NULL)
-  #       
-  #     }else{
-  #       
-  #       shinyjs::show("td_config_drop")
-  #       
-  #       switch(
-  #         EXPR = input$radio_geom_type,
-  #         "style_a" = {
-  #           if(input$check_able_td == FALSE){
-  #             ggplot(
-  #               data = csv_data(),
-  #               mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td)
-  #             ) + 
-  #               geom_point(
-  #                 shape = as.numeric(input$picker_shape_point), 
-  #                 size = 3, 
-  #                 color = input$col_line1
-  #               ) +
-  #               theme_minimal()
-  #           }else{
-  #             ggplot(
-  #               data = csv_data(),
-  #               mapping = aes_string(x = input$picker_var1_td)
-  #             ) + 
-  #               geom_point(
-  #                 mapping = aes_string(y = input$picker_var2_td),
-  #                 shape = as.numeric(input$picker_shape_point), 
-  #                 size = 3, 
-  #                 color = input$col_line1
-  #               ) +
-  #               geom_point(
-  #                 mapping = aes_string(y = input$picker_var3_td),
-  #                 shape = as.numeric(input$picker_shape_point2), 
-  #                 size = 3, 
-  #                 color = input$col_line2
-  #               ) +
-  #               labs(
-  #                 x = input$picker_var1_td, 
-  #                 y =  sprintf("%s - %s", input$picker_var2_td, input$picker_var3_td)
-  #               ) + 
-  #               theme_minimal() 
-  #           }
-  #         },
-  #         "style_b" = {
-  #           if(input$check_able_td == FALSE){
-  #             ggplot(
-  #               data = csv_data(),
-  #               mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td, group = 1)
-  #             ) +
-  #               geom_line(
-  #                 color = input$col_line1,
-  #                 size = as.numeric(input$picker_size_line)
-  #               ) +
-  #               theme_minimal()
-  #           }else{
-  #             ggplot(
-  #               data = csv_data(),
-  #               mapping = aes_string(x = input$picker_var1_td)
-  #             ) +
-  #               geom_line(
-  #                 mapping = aes_string(y = input$picker_var2_td, group = 1),
-  #                 color = input$col_line1,
-  #                 size = as.numeric(input$picker_size_line)
-  #               ) +
-  #               geom_line(
-  #                 mapping = aes_string(y = input$picker_var3_td, group = 2),
-  #                 color = input$col_line2,
-  #                 size = as.numeric(input$picker_size_line)
-  #               ) +
-  #               labs(
-  #                 x = input$picker_var1_td, 
-  #                 y =  sprintf("%s - %s", input$picker_var2_td, input$picker_var3_td)
-  #               ) +
-  #               theme_minimal()
-  #           }
-  #         },
-  #         "style_c" = {
-  #           if(input$check_able_td == FALSE){
-  #             ggplot(
-  #               data = csv_data(),
-  #               mapping = aes_string(x = input$picker_var1_td, y = input$picker_var2_td, colour = "Fecha")
-  #               
-  #             ) +
-  #               geom_point(
-  #                 # aes(
-  #                 #   
-  #                 # )
-  #                 # shape = as.numeric(input$picker_shape_point), 
-  #                 # size = 3, 
-  #                 # color = input$col_line1
-  #               ) +
-  #               geom_line(
-  #                 # aes(
-  #                 #   group = "Fecha"
-  #                 # )
-  #                 # mapping =aes_string(group = 1),
-  #                 # color = input$col_line1,
-  #                 # size = as.numeric(input$picker_size_line)
-  #               ) +
-  #               theme_minimal()
-  #           }else{
-  #             ggplot(
-  #               data = csv_data(),
-  #               mapping = aes_string(x = input$picker_var1_td)
-  #             ) +
-  #               geom_line(
-  #                 mapping =aes_string(y = input$picker_var2_td, group = 1),
-  #                 color = input$col_line1,
-  #                 size = as.numeric(input$picker_size_line)
-  #               ) +
-  #               geom_point(
-  #                 mapping =aes_string(y = input$picker_var2_td),
-  #                 shape = as.numeric(input$picker_shape_point), 
-  #                 size = 3, 
-  #                 color = input$col_line1
-  #               ) + 
-  #               geom_line(
-  #                 mapping =aes_string(y = input$picker_var3_td, group = 2),
-  #                 color = input$col_line2,
-  #                 size = as.numeric(input$picker_size_line)
-  #               ) +
-  #               geom_point(
-  #                 mapping = aes_string(y = input$picker_var3_td),
-  #                 shape = as.numeric(input$picker_shape_point2), 
-  #                 size = 3, 
-  #                 color = input$col_line2
-  #               ) +
-  #               labs(
-  #                 x = input$picker_var1_td, 
-  #                 y =  sprintf("%s - %s", input$picker_var2_td, input$picker_var3_td)
-  #               ) +
-  #               theme_minimal()
-  #           }
-  #           
-  #         }
-  #       )
-  #     }
-  #     
-  #   })
-  # })
-  # 
-  # observe({
-  #   output$plot_hbv <- renderPlot({ 
-  #     
-  #     if(is.null(input$picker_var4_td)){
-  #       
-  #       return(NULL)
-  #       
-  #     }else{
-  #       
-  #       shinyjs::show("td_config_drop1")
-  #       
-  #       switch(
-  #         EXPR = input$radio_geom_type2,
-  #         "graph_a" = {
-  #           ggplot(
-  #             data = csv_data(),
-  #             mapping = aes_string(x = input$picker_var4_td)
-  #           ) +
-  #             geom_histogram(
-  #               color="black", 
-  #               fill="white"
-  #             ) +
-  #             theme_minimal()
-  #         },
-  #         "graph_b" = {
-  #           ggplot(
-  #             data = csv_data(),
-  #             mapping = aes_string(x = input$picker_var4_td)
-  #           ) +
-  #             geom_boxplot() +
-  #             theme_minimal()
-  #         },
-  #         "graph_c" = {
-  #           ggplot(
-  #             data = csv_data(),
-  #             mapping = aes_string(x = input$picker_var6_td, y = input$picker_var4_td )
-  #           ) +
-  #             geom_violin() +
-  #             theme_minimal()
-  #         }
-  #       )
-  #       
-  #     }
-  #   })
-  #   
-  #   output$plot_hbv_comp <- renderPlot({ 
-  #     
-  #     if(is.null(input$picker_var5_td)){
-  #       
-  #       return(NULL)
-  #       
-  #     }else{
-  #       
-  #       shinyjs::show("td_config_drop1")
-  #       
-  #       switch(
-  #         EXPR = input$radio_geom_type2,
-  #         "graph_a" = {
-  #           ggplot(
-  #             data = csv_data(),
-  #             mapping = aes_string(x = input$picker_var5_td)
-  #           ) +
-  #             geom_histogram(
-  #               color="black", 
-  #               fill="white") +
-  #             theme_minimal()
-  #         },
-  #         "graph_b" = {
-  #           ggplot(
-  #             data = csv_data(),
-  #             mapping = aes_string(x =  input$picker_var5_td)
-  #           ) +
-  #             geom_boxplot() +
-  #             theme_minimal()
-  #         },
-  #         "graph_c" = {
-  #           ggplot(
-  #             data = csv_data(),
-  #             mapping = aes_string(x = input$picker_var6_td, y = input$picker_var5_td)
-  #           ) +
-  #             geom_violin() +
-  #             theme_minimal()
-  #         }
-  #       )
-  #       
-  #     }
-  #   })
-  # })
+  # Vareable selector for Analytic Results
+  output$select_analytic <- renderUI({
+    
+    tagList(
+      pickerInput(
+        inputId = ns("var_analytic"),
+        label = "Variables",
+        choices = numeric_names()
+      ),
+      pickerInput(
+        inputId = ns("var_analytic2"),
+        choices = numeric_names()
+      )
+    )
+    
+  })
+
+  
+  observe({
+
+    output$value_cor_pear <- renderPrint({
+      
+      cor(
+        x = numeric_data() %>% select(input$var_analytic), 
+        y = numeric_data() %>% select(input$var_analytic2),
+        method = "pearson"
+      )
+
+    })
+    
+    output$value_cor_ken <- renderPrint({
+
+      cor(
+        x = numeric_data() %>% select(input$var_analytic), 
+        y = numeric_data() %>% select(input$var_analytic2),
+        method = "kendall"
+      )
+
+    })
+    
+    output$value_cor_spear <- renderPrint({
+
+      cor(
+        x = numeric_data() %>% select(input$var_analytic), 
+        y = numeric_data() %>% select(input$var_analytic2),
+        method = "spearman"
+      )
+    })
+    
+  })
 
 }
