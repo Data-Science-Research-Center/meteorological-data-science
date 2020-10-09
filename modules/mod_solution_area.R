@@ -187,27 +187,17 @@ solution_area_ui<-function(id){
             )
           )
         ),
-        tabPanel( # Comparative Time Charts - Section 5
-          "Comparative Charts", 
+        tabPanel( # Analytical results - Section 5
+          "Analytical results", 
           fluidRow(
             column(
               width = 3,
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
-                  h4("Comparative Time Charts", style = "text-align:center"),
-                  hr(),
-                  # radioButtons(
-                  #   inputId = ns("diagram_chart_multiple"),
-                  #   label = "Type of chart",
-                  #   choices = c(
-                  #     "Line chart" = "op1m", 
-                  #     "Dot chart" = "op2m", 
-                  #     "Bar chart" = "op3m"),
-                  #   selected = "op1m",
-                  #   inline = FALSE
-                  # ),
-                  # uiOutput(ns("select_tempo_1m"))
+                  h4("Analytical results", style = "text-align:center"),
+                  hr()
+
                 )
               )
             ),
@@ -216,16 +206,32 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
                 div(
-                  # highchartOutput(
-                  #   outputId = ns("ho_plot_m"),
-                  #   width = "100%",
-                  #   height = "240px"
-                  # ),
-                  # highchartOutput(
-                  #   outputId = ns("ho_plot_m2"),
-                  #   width = "100%",
-                  #   height = "240px"
-                  # )
+
+                )
+              )
+            )
+          )
+        ),
+        tabPanel( # Save Project - Section 6
+          "Save Project", 
+          fluidRow(
+            column(
+              width = 3,
+              material_card(
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
+                div(
+                  h4("Save Project", style = "text-align:center"),
+                  hr()
+                  
+                )
+              )
+            ),
+            column(
+              width = 9,
+              material_card(
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
+                div(
+                  
                 )
               )
             )
@@ -245,10 +251,6 @@ solution_area_server<-function(input, output,session){
   
   data_csv <- reactiveVal()
   numeric_names <- reactiveVal()
-  
-  # JS events
-  shinyjs::hide("td_config_drop")
-  shinyjs::hide("td_config_drop1")
   
   # Load CSV area
   output$data_from <- DT::renderDT({
