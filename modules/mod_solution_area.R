@@ -209,13 +209,11 @@ solution_area_ui<-function(id){
                   fluidRow(
                     column(
                       6,
-                      h6("Pearson's Correlation Coefficient"),
-                      verbatimTextOutput(ns("value_cor_pear"))
+                      uiOutput(ns("uiout_pear"))
                     ),
                     column(
                       6,
-                      h6("Kendall's Correlation Coefficient"),
-                      verbatimTextOutput(ns("value_cor_ken"))
+                      uiOutput(ns("uiout_ken"))
                     )
                     
                   ),
@@ -223,23 +221,21 @@ solution_area_ui<-function(id){
                   fluidRow(
                     column(
                       6,
-                      h6("Spearman's Correlation Coefficient"),
-                      verbatimTextOutput(ns("value_cor_spear"))
+                      uiOutput(ns("uiout_spear"))
                     ),
                     column(
                       6,
-                      h6("Variance"),
-                      verbatimTextOutput(ns("value_v"))
+                      uiOutput(ns("uiout_v"))
                     )
                     
                   ),
                   br(),
                   fluidRow(
                     column(
-                      6,
-                      h6("Mean and Ranges"),
-                      verbatimTextOutput(ns("value_mr"))
+                      7,
+                      uiOutput(ns("uiout_mr"))
                     )
+                  
                   )
                 )
               )
@@ -265,7 +261,50 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
                 div(
-                  
+                  h4("Save Project"),
+                  p("dfsdfsfsdf"),
+                  br(),
+                  fluidRow(
+                    column(
+                      6,
+                      style = "background:red",
+                      fluidRow(
+                        column(
+                          6,
+                          textInput(
+                            ns("dfsdfsdfs"),
+                            label = NULL,
+                            placeholder = "project's name"
+                          )
+                        ),
+                        column(
+                          6,
+                          textInput(
+                            ns("dfsdfsdfsdsds"),
+                            label = NULL,
+                            placeholder = "project's name"
+                          )
+                        )
+                      )
+
+                    ),
+                    column(
+                      6,
+                      style = "background:blue",
+                      fluidRow(
+                        column(
+                          12,
+                          textAreaInput(
+                            ns("dfsdfxxxxsdsdsdsfs"),
+                            label = NULL,
+                            placeholder = "project's name",
+                            width = "100%",
+                            cols = 12
+                          )
+                        )
+                      )
+                    )
+                  )
                 )
               )
             )
@@ -299,6 +338,7 @@ solution_area_server<-function(input, output,session){
       if(data_ext != "csv"){
 
         return((NULL))
+
         
       }else{
         
@@ -648,7 +688,7 @@ solution_area_server<-function(input, output,session){
     }else{
       
       output$value_cor_pear <- renderPrint({
-        
+
         cor(
           x = numeric_data() %>% select(input$var_analytic), 
           y = numeric_data() %>% select(input$var_analytic2),
@@ -656,6 +696,15 @@ solution_area_server<-function(input, output,session){
         )
         
       })
+      
+      output$uiout_pear <- renderUI({
+        
+        tagList(
+          h6("Pearson's Correlation Coefficient"),
+          verbatimTextOutput(ns("value_cor_pear"))
+        )
+        
+      })   
       
       output$value_cor_ken <- renderPrint({
         
@@ -667,6 +716,15 @@ solution_area_server<-function(input, output,session){
         
       })
       
+      output$uiout_ken <- renderUI({
+        
+        tagList(
+          h6("Pearson's Correlation Coefficient"),
+          verbatimTextOutput(ns("value_cor_ken"))
+        )
+        
+      })  
+      
       output$value_cor_spear <- renderPrint({
         
         cor(
@@ -674,6 +732,15 @@ solution_area_server<-function(input, output,session){
           y = numeric_data() %>% select(input$var_analytic2),
           method = "spearman"
         )
+      })
+      
+      output$uiout_spear <- renderUI({
+        
+        tagList(
+          h6("Pearson's Correlation Coefficient"),
+          verbatimTextOutput(ns("value_cor_spear"))
+        )
+        
       })
       
     }
@@ -689,9 +756,15 @@ solution_area_server<-function(input, output,session){
     }else{
       
       output$value_mr <- renderPrint({
-        
         summary(object = numeric_data() %>% select(input$var_analytic,input$var_analytic2) )
+      })
       
+      output$uiout_mr <- renderUI({
+        
+        tagList(
+          h6("Mean and Ranges"),
+          verbatimTextOutput(ns("value_mr"))
+        )
         
       })
       
@@ -708,12 +781,19 @@ solution_area_server<-function(input, output,session){
     }else{
       
       output$value_v <- renderPrint({
-        
         var(
           x = numeric_data() %>% select(input$var_analytic),
           y = numeric_data() %>% select(input$var_analytic2)
         )
+      })
+      
+      output$uiout_v <- renderUI({
         
+        tagList(
+          h6("Variance"),
+          verbatimTextOutput(ns("value_v"))
+        )
+
       })
       
     }
