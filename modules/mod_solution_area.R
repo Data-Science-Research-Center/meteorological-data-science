@@ -204,7 +204,7 @@ solution_area_ui<-function(id){
             column(
               width = 9,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt;",
                 div(
                   fluidRow(
                     column(
@@ -259,53 +259,72 @@ solution_area_ui<-function(id){
             column(
               width = 9,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt;",
                 div(
                   h4("Save Project"),
-                  p("dfsdfsfsdf"),
-                  br(),
+                  p("dfsdfsfsdf")
+                ),
+                br(),
+                div(
                   fluidRow(
                     column(
                       6,
-                      style = "background:red",
+                      p("Project's information"),
+                      textInput(
+                        ns("input_name"),
+                        label = NULL,
+                        placeholder = "Project's name",
+                        width = "100%"
+                      ),
+                      textInput(
+                        ns("input_institution"),
+                        label = NULL,
+                        placeholder = "Institution's name",
+                        width = "100%"
+                      ),
+                      textAreaInput(
+                        ns("input_description"),
+                        label = NULL,
+                        placeholder = "Project description",
+                        width = "100%",
+                        height = "150px",
+                        resize = "none"
+                      )
+                      
+                    ),
+                    column(
+                      6,
+                      p("Project's author"),
                       fluidRow(
                         column(
                           6,
                           textInput(
-                            ns("dfsdfsdfs"),
+                            ns("input_a_name"),
                             label = NULL,
-                            placeholder = "project's name"
+                            placeholder = "Name",
+                            width = "100%"
                           )
                         ),
                         column(
                           6,
                           textInput(
-                            ns("dfsdfsdfsdsds"),
+                            ns("input_a_lastname"),
                             label = NULL,
-                            placeholder = "project's name"
+                            placeholder = "Last name",
+                            width = "100%"
                           )
                         )
-                      )
-
-                    ),
-                    column(
-                      6,
-                      style = "background:blue",
-                      fluidRow(
-                        column(
-                          12,
-                          textAreaInput(
-                            ns("dfsdfxxxxsdsdsdsfs"),
-                            label = NULL,
-                            placeholder = "project's name",
-                            width = "100%",
-                            cols = 12
-                          )
-                        )
+                      ),
+                      passwordInput(
+                        ns("input_password"),
+                        label = NULL,
+                        placeholder = "Password",
+                        width = "100%",
                       )
                     )
                   )
                 )
+                  
               )
             )
           )
@@ -418,19 +437,19 @@ solution_area_server<-function(input, output,session){
   # Create the time series object
   tempo_app_simple <- reactive({
 
-    xts(as.vector(data_csv() %>% select(input$picker_tempo_1)),as.Date(data_csv()$date))
+    xts(as.vector(data_csv() %>% select(input$picker_tempo_1)), order.by = as.Date(data_csv()$date, "%Y-%m-%d"))
 
   })
   
   tempo_app_multi1 <- reactive({
     
-    xts(as.vector(data_csv() %>% select(input$picker_tempo_1m)), as.Date(data_csv()$date))
+    xts(as.vector(data_csv() %>% select(input$picker_tempo_1m)), order.by = as.Date(data_csv()$date, "%Y-%m-%d"))
     
   })
   
   tempo_app_multi2 <- reactive({
     
-    xts(as.vector(data_csv() %>% select(input$picker_tempo_2m)), as.Date(data_csv()$date))
+    xts(as.vector(data_csv() %>% select(input$picker_tempo_2m)), order.by = as.Date(data_csv()$date, "%Y-%m-%d"))
     
   })
 
