@@ -8,6 +8,7 @@
 # Solution area UI -----
 solution_area_ui<-function(id){
   ns <- NS(id)
+  
   fluidRow(
     column(
       width = 12,
@@ -320,6 +321,11 @@ solution_area_ui<-function(id){
                         label = NULL,
                         placeholder = "Password",
                         width = "100%",
+                      ),
+                      actionBttn(
+                        ns("save_project"), 
+                        label = "Save", 
+                        size = "xs"
                       )
                     )
                   )
@@ -344,6 +350,17 @@ solution_area_server<-function(input, output,session){
   data_csv <- reactiveVal()
   numeric_names <- reactiveVal()
   numeric_data <- reactiveVal()
+  
+  
+  # Variables to save projects
+  
+  p_name <- reactiveVal()
+  p_institution <- reactiveVal()
+  p_description <- reactiveVal()
+  p_author <- reactiveVal()
+  p_date <- reactiveVal()
+  p_password <- reactiveVal()
+  
   
   # Load CSV area
   output$data_from <- DT::renderDT({
@@ -816,6 +833,29 @@ solution_area_server<-function(input, output,session){
       })
       
     }
+    
+  })
+  
+  
+  observeEvent(input$save_project,{
+    
+    p_name(input$input_name)
+    p_institution(input$input_institution)
+    p_description(input$input_description)
+    p_author(sprintf("%s %s",input$input_a_name,input$input_a_lastname))
+    p_date(Sys.Date())
+    p_password(input$input_password)
+    
+    project_save()
+    
+    shinyjs::reset("input_name")
+    shinyjs::reset("input_institution")
+    shinyjs::reset("input_description")
+    shinyjs::reset("input_a_name")
+    shinyjs::reset("input_a_lastname")
+    shinyjs::reset("input_password")
+    
+    
     
   })
 

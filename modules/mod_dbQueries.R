@@ -27,7 +27,7 @@ data_all<-function(){
   data_connection()$find(fields=fl)
 }
 
-# Specific dates -----
+# Specific dates 
 data_specific <- function(project_id){
   req(data_connection())
   
@@ -36,14 +36,14 @@ data_specific <- function(project_id){
   data_connection()$find(query = q)
 }
 
-# First data in the database -----
+# First data in the database 
 data_first<-function(){
   req(data_connection())
   
   data_connection()$find(sort = '{"_id":1}', limit = 1, fields = '{"_id":1}')
 }
 
-# Verify password -----
+# Verify - password 
 password__delete <- function(project_id, project_pass,path_data){
   q <- sprintf('{"_id" : {"$oid":"%s"}}', project_id)
   r <- data_connection()$find(query = q) %>% select(projectPassword)
@@ -55,13 +55,13 @@ password__delete <- function(project_id, project_pass,path_data){
     return("Incorrect password")
 }
 
-# Project delete -----
+# Project - delete 
 project_delete <- function(q,path_data){
   data_connection()$remove(query = q, just_one = TRUE)
   file.remove(sprintf("%s",path_data))
 }
 
-# Verify password -----
+# Verify - password 
 password_edit <- function (project_id, project_pass, project_description){
   q <- sprintf('{"_id" : {"$oid":"%s"}}', project_id)
   r <- data_connection()$find(query = q) %>% select(projectPassword)
@@ -73,13 +73,13 @@ password_edit <- function (project_id, project_pass, project_description){
   return("Incorrect password")
 }
 
-# Project edit -----
+# Project - edit 
 project_edit <- function(q, project_description){
   u <- sprintf('{"$set":{"projectDescription":"%s"}}', project_description)
   data_connection()$update(query = q, update = u)
 }
 
-# Verify password -----
+# Verify - password 
 password_value <- function (project_id, project_pass){
   q <- sprintf('{"_id" : {"$oid":"%s"}}', project_id)
   r <- data_connection()$find(query = q) %>% select(projectPassword)
@@ -89,6 +89,11 @@ password_value <- function (project_id, project_pass){
   }
   return("Incorrect password")
 }
-  
+
+# Project - save
+project_save <- function (){ #project_name, project_institution, project_description, project_a_name, project_password
+  q <- '[{"projectPassword" : "1294", "projectName" : "Cided", "projectDescription" : "hola", "institutionName" : "cided", "projectAutor" : "pepe", "projectDate" : "2020-10-12", "projectData" : "sdsd"} ]'
+  r <- data_connection()$insert(fromJSON(q))
+}
 
 

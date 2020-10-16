@@ -35,7 +35,7 @@ explorer_area_ui <- function(id) {
             uiOutput(ns("project_info")) %>% 
               withSpinner(type = 6, size = 0.3, proxy.height = "200px")
           ),
-          column(
+          column( #revisar factibilidad para agregar
             width = 12,
             h1("Gráfico") #%>% 
               #withSpinner(type = 6, size = 0.3, proxy.height = "200px")
@@ -306,6 +306,7 @@ explorer_area_server<- function(input, output, session) {
           select(projectName,projectDate) %>%
           rename(project = projectName, date = projectDate)
       })
+      
       
       output$project_table<-DT::renderDT({
         data_all_select() %>%
