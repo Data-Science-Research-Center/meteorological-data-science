@@ -91,8 +91,8 @@ password_value <- function (project_id, project_pass){
 }
 
 # Project - save
-project_save <- function (){ #project_name, project_institution, project_description, project_a_name, project_password
-  q <- '[{"projectPassword" : "1294", "projectName" : "Cided", "projectDescription" : "hola", "institutionName" : "cided", "projectAutor" : "pepe", "projectDate" : "2020-10-12", "projectData" : "sdsd"} ]'
+project_save <- function (project_password, project_name, project_description, project_institution, project_a_name, project_date, project_data){
+  q <- sprintf('[ { "projectPassword" : "%s", "projectName" : "%s", "projectDescription" : "%s", "institutionName" : "%s", "projectAutor" : "%s", "projectDate" : "%s", "projectData" : "%s" } ]', project_password, project_name, project_description, project_institution, project_a_name, project_date, project_data)
   r <- data_connection()$insert(fromJSON(q))
 }
 

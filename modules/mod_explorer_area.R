@@ -98,6 +98,7 @@ explorer_area_server<- function(input, output, session) {
     
     path_json <- selected_project()$project_db_selected$projectData
     json_data <- fromJSON(txt = sprintf("%s",path_json), simplifyDataFrame = TRUE)
+    
   })
   
   output$project_data_csv<-DT::renderDT({

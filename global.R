@@ -23,6 +23,8 @@ library(readr)
 library(dplyr)
 library(colourpicker)
 library(xts)
+library(fs)
+library(stats)
 
 # Load modules -----
 source("modules/mod_header_area.R")

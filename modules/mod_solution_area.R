@@ -360,7 +360,10 @@ solution_area_server<-function(input, output,session){
   p_author <- reactiveVal()
   p_date <- reactiveVal()
   p_password <- reactiveVal()
+  dat_ran <- reactiveVal()
   
+  # File name
+  fname <- reactiveVal()
   
   # Load CSV area
   output$data_from <- DT::renderDT({
@@ -369,7 +372,9 @@ solution_area_server<-function(input, output,session){
       return((NULL))
       
     }else{
+      
       data_ext <- tools::file_ext(toString(input$file_input_csv))
+      fname(path_file(input$file_input_csv))
       
       if(data_ext != "csv"){
 
@@ -846,7 +851,22 @@ solution_area_server<-function(input, output,session){
     p_date(Sys.Date())
     p_password(input$input_password)
     
-    project_save()
+    
+    dat_ran(sprintf("private/data/%s.json", runif(1, min=3, max=4)))
+    
+    write_json(data_csv(), dat_ran())
+    
+    project_save(p_password(), p_name(), p_description(), p_institution(), p_author(), p_date(), dat_ran())
+    # project_save("sdsd", "asdsad", "p_description()", "p_institution()", "p_author()", "p_date()", "/DATA/INFO&UHG.CSV")
+    
+    
+    cat(dat_ran())
+    # fname()
+    # cat(toString(input$file_input_csv))
+    # print(path_file(input$file_input_csv))
+      
+    
+    
     
     shinyjs::reset("input_name")
     shinyjs::reset("input_institution")
