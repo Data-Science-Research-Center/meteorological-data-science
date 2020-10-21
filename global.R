@@ -25,6 +25,7 @@ library(colourpicker)
 library(xts)
 library(fs)
 library(stats)
+library(shinyFeedback)
 
 # Load modules -----
 source("modules/mod_header_area.R")

@@ -251,7 +251,7 @@ explorer_area_server<- function(input, output, session) {
     req(selected_project())
     
     id_project <- selected_project()$project_db_selected$`_id`
-    path_data <- selected_project()$project_db_selected$projectData
+    path_data <- selected_project()$project_db_selected$projectData                                          
     pass_project <- input$password_delete
     
     text_result <- password_delete(id_project,pass_project,path_data)

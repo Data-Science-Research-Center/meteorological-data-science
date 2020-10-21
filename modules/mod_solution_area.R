@@ -856,17 +856,7 @@ solution_area_server<-function(input, output,session){
     
     write_json(data_csv(), dat_ran())
     
-    project_save(p_password(), p_name(), p_description(), p_institution(), p_author(), p_date(), dat_ran())
-    # project_save("sdsd", "asdsad", "p_description()", "p_institution()", "p_author()", "p_date()", "/DATA/INFO&UHG.CSV")
-    
-    
-    cat(dat_ran())
-    # fname()
-    # cat(toString(input$file_input_csv))
-    # print(path_file(input$file_input_csv))
-      
-    
-    
+    result_sav <- project_save(p_password(), p_name(), p_description(), p_institution(), p_author(), p_date(), dat_ran())
     
     shinyjs::reset("input_name")
     shinyjs::reset("input_institution")

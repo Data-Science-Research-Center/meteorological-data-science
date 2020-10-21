@@ -94,6 +94,12 @@ password_value <- function (project_id, project_pass){
 project_save <- function (project_password, project_name, project_description, project_institution, project_a_name, project_date, project_data){
   q <- sprintf('[ { "projectPassword" : "%s", "projectName" : "%s", "projectDescription" : "%s", "institutionName" : "%s", "projectAutor" : "%s", "projectDate" : "%s", "projectData" : "%s" } ]', project_password, project_name, project_description, project_institution, project_a_name, project_date, project_data)
   r <- data_connection()$insert(fromJSON(q))
+  
+  if(r[1] == 1){
+    return("Saved correctly")
+  }else{
+    return("Save was not completed")
+  }
 }
 
 
