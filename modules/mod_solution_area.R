@@ -49,7 +49,9 @@ solution_area_ui<-function(id){
                 fluidRow(
                   column(
                     width = 12,
-                    p("If you need a guide to the data schema, download it here"), 
+                    p("If you need a guide to the data schema", downloadLink(ns("downloadLink"), "download", style = "color:red"), "it here.")
+                    
+                    
                   )
                 )
               )
@@ -426,6 +428,15 @@ solution_area_server<-function(input, output,session){
     replaceData(proxyData, session$userData$DATA_CSV, resetPaging = FALSE, rownames = FALSE)
     data_csv(session$userData$DATA_CSV)
   })
+  
+  # Download input
+  output$downloadLink <- downloadHandler(
+    filename = "info.pdf",
+    content = function(file) {
+      file.copy("private/config/info.pdf", file)
+    },
+    contentType = "pdf"
+  )
   
   # Vareable selector for Temporary Graphics
   output$select_tempo_1 <- renderUI({
@@ -841,32 +852,45 @@ solution_area_server<-function(input, output,session){
     
   })
   
-  
+  # Save project in data base
   observeEvent(input$save_project,{
     
-    p_name(input$input_name)
-    p_institution(input$input_institution)
-    p_description(input$input_description)
-    p_author(sprintf("%s %s",input$input_a_name,input$input_a_lastname))
-    p_date(Sys.Date())
-    p_password(input$input_password)
-    
-    
-    dat_ran(sprintf("private/data/%s.json", runif(1, min=3, max=4)))
-    
-    write_json(data_csv(), dat_ran())
-    
-    result_sav <- project_save(p_password(), p_name(), p_description(), p_institution(), p_author(), p_date(), dat_ran())
-    
-    shinyjs::reset("input_name")
-    shinyjs::reset("input_institution")
-    shinyjs::reset("input_description")
-    shinyjs::reset("input_a_name")
-    shinyjs::reset("input_a_lastname")
-    shinyjs::reset("input_password")
-    
-    
-    
+    if(is.null(input$file_input_csv)){
+      
+      return(NULL)
+      
+    }else{
+      
+      req(input$input_name,input$input_institution,input$input_a_name,input$input_a_lastname,input$input_password)
+      
+     
+      p_name(input$input_name)
+      p_institution(input$input_institution)
+      p_description(input$input_description)
+      p_author(sprintf("%s %s",input$input_a_name,input$input_a_lastname))
+      p_date(Sys.Date())
+      p_password(input$input_password)
+      
+      
+      dat_ran(sprintf("private/data/%s.json", runif(1, min=1, max=4)))
+      
+      write_json(data_csv(), dat_ran())
+      
+      result_sav <- project_save(as.character(p_password()), as.character(p_name()), as.character(p_description()), as.character(p_institution()), as.character(p_author()), as.character(p_date()), as.character(dat_ran()))
+      
+      shinyjs::reset("input_name")
+      shinyjs::reset("input_institution")
+      shinyjs::reset("input_description")
+      shinyjs::reset("input_a_name")
+      shinyjs::reset("input_a_lastname")
+      shinyjs::reset("input_password")
+      
+    }
+
   })
+  
+  
+    
+  
 
 }

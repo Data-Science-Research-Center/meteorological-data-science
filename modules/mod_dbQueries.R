@@ -44,7 +44,7 @@ data_first<-function(){
 }
 
 # Verify - password 
-password__delete <- function(project_id, project_pass,path_data){
+password_delete <- function(project_id, project_pass,path_data){
   q <- sprintf('{"_id" : {"$oid":"%s"}}', project_id)
   r <- data_connection()$find(query = q) %>% select(projectPassword)
   

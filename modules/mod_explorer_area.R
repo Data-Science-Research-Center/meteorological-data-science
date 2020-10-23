@@ -34,11 +34,6 @@ explorer_area_ui <- function(id) {
             width = 12,
             uiOutput(ns("project_info")) %>% 
               withSpinner(type = 6, size = 0.3, proxy.height = "200px")
-          ),
-          column( #revisar factibilidad para agregar
-            width = 12,
-            h1("Gráfico") #%>% 
-              #withSpinner(type = 6, size = 0.3, proxy.height = "200px")
           )
         )
       )
@@ -137,7 +132,13 @@ explorer_area_server<- function(input, output, session) {
           ns("delete_project"), 
           label = "Delete", 
           size = "xs"
+        ),
+        downloadBttn(
+          ns("downloadButtonFile"),
+          label = "Download",
+          size = "xs"
         )
+        
       ),
       hr()
     )
@@ -320,5 +321,19 @@ explorer_area_server<- function(input, output, session) {
       })
     }
   })
+  
+  output$downloadButtonFile <- downloadHandler(
+    filename = "data.csv",
+    content = function(file) {
+      write.csv(select_data_csv(), file, row.names = FALSE)
+    },
+    contentType = "csv"
+  )
+    
+
+  
+  
+  
+  
 }
 
