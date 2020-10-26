@@ -62,20 +62,20 @@ project_delete <- function(q,path_data){
 }
 
 # Verify - password 
-password_edit <- function (project_id, project_pass, project_description){
+password_edit <- function (project_id, project_pass, project_description, project_name, institution_name){
   q <- sprintf('{"_id" : {"$oid":"%s"}}', project_id)
   r <- data_connection()$find(query = q) %>% select(projectPassword)
   
   if(r == project_pass){
-    project_edit(q, project_description)
+    project_edit(q, project_description, project_name, institution_name)
     return("Successfully edited")
   }
   return("Incorrect password")
 }
 
 # Project - edit 
-project_edit <- function(q, project_description){
-  u <- sprintf('{"$set":{"projectDescription":"%s"}}', project_description)
+project_edit <- function(q, project_description, project_name, institution_name){
+  u <- sprintf('{"$set":{"projectDescription":"%s", "projectName" : "%s", "institutionName" : "%s"}}', project_description, project_name, institution_name)
   data_connection()$update(query = q, update = u)
 }
 

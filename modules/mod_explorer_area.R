@@ -8,6 +8,9 @@
 # Explorer area UI -----
 explorer_area_ui <- function(id) {
   ns <- NS(id)
+  
+  shinyFeedback::useShinyFeedback()
+  
   material_card(
     style = "background:#ffffff",
     fluidRow(
@@ -148,7 +151,7 @@ explorer_area_server<- function(input, output, session) {
     sendSweetAlert(
       session = session,
       title = NULL,
-      width = 300,
+      width = 500,
       showCloseButton = TRUE,
       btn_labels = NA,
       text = fluidRow(
@@ -185,26 +188,45 @@ explorer_area_server<- function(input, output, session) {
     tagList(
       br(),
       h4("Update your information"),
-      div(
+      fluidRow(
         style = "text-align:justify",
-        textAreaInput(
-          inputId = ns("edit_description_pro"),
-          label = "Description", 
-          width = "100%",
-          height = "100px",
-          resize = "vertical",
-          placeholder = selected_project()$project_db_selected$projectDescription, 
+        column(
+          width = 6,
+          textInput(
+            ns("edit_projectName_pro"),
+            label = "Project name",
+            width = "100%",
+            value = selected_project()$project_db_selected$projectName
+          ),
+          textInput(
+            ns("edit_institution_pro"),
+            label = "Institution",
+            width = "100%",
+            value = selected_project()$project_db_selected$institutionName
+          )
+        ),
+        column(
+          width = 6,
+          textAreaInput(
+            inputId = ns("edit_description_pro"),
+            label = "Description", 
+            width = "100%",
+            height = "100px",
+            resize = "vertical",
+            value = selected_project()$project_db_selected$projectDescription
+          )
         )
       ),
-      div(
-        p("Please type your project ", strong("password")," to confirm.", style = "text-align:justify"),
-        passwordInput(
-          inputId = ns("password_edit"),
-          label = NULL,
-          width = "100%"
-        ),
-        uiOutput(
-          ns("result_edit")
+      p("Please type your project ", strong("password")," to confirm.", style = "text-align:justify"),
+      fluidRow(
+        column(
+          width = 6,
+          offset = 3,
+          passwordInput(
+            inputId = ns("password_edit"),
+            label = NULL,
+            width = "100%"
+          )
         )
       ),
       div(
@@ -233,9 +255,6 @@ explorer_area_server<- function(input, output, session) {
           inputId = ns("password_delete"),
           label = NULL,
           width = "100%"
-        ),
-        uiOutput(
-          ns("result_delete")
         )
       ),
       div(
@@ -257,11 +276,6 @@ explorer_area_server<- function(input, output, session) {
     
     text_result <- password_delete(id_project,pass_project,path_data)
     
-    output$result_delete <- renderUI({
-      tagList(
-        h6(text_result, style = "color:red")
-      )
-    })
     
     if(text_result == "Successfully removed"){
       data_all_select <- reactive({
@@ -287,20 +301,20 @@ explorer_area_server<- function(input, output, session) {
     
     if(input$edit_description_pro == ""){
       description_project <- selected_project()$project_db_selected$projectDescription
+      name_project <- selected_project()$project_db_selected$projectName
+      name_institution <- selected_project()$project_db_selected$institutionName
     }else{
       description_project <- input$edit_description_pro
+      name_project <- input$edit_projectName_pro
+      name_institution <- input$edit_institution_pro
     }
+    
     
     id_project <- selected_project()$project_db_selected$`_id`
     pass_project <- input$password_edit
     
-    text_result <- password_edit(id_project, pass_project, description_project)
+    text_result <- password_edit(as.character(id_project), as.character(pass_project), as.character(description_project), as.character(name_project), as.character(name_institution))
     
-    output$result_edit <- renderUI({
-      tagList(
-        h6(text_result, style = "color:red")
-      )
-    })
     
     if(text_result == "Successfully edited"){
       data_all_select <- reactive({
@@ -331,9 +345,6 @@ explorer_area_server<- function(input, output, session) {
   )
     
 
-  
-  
-  
   
 }
 
