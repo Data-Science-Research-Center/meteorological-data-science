@@ -42,11 +42,13 @@ solution_area_ui<-function(id){
                       buttonLabel = span(class="ti-file", style = "font-size:22pt"),
                       accept = c("text/csv","text/comma-separated-values",".csv")
                     )
-                  ),
-                  column(
-                    width = 12,
-                  h1("hola")
                   )
+                ),
+                div(
+                  textOutput(ns("n_var")),
+                  textOutput(ns("n_registers")),
+                  textOutput(ns("n_cuali")),
+                  textOutput(ns("n_cuanti"))
                 ),
                 hr(),
                 fluidRow(
@@ -426,6 +428,44 @@ solution_area_server<-function(input, output,session){
     data_csv(session$userData$DATA_CSV)
   })
   
+  
+  # Document preprocessing
+  observe({
+    
+    if(is.null(input$file_input_csv)){
+      
+      return((NULL))
+      
+    }else{
+      
+      output$n_var <- renderText({
+        
+        sprintf("Number of variables: %s", ncol(data_csv()))
+        
+      })
+      
+      output$n_registers <- renderText({
+        
+        sprintf("Number of records: %s", nrow(data_csv()))
+        
+      })
+      
+      output$n_cuali <- renderText({
+        
+        sprintf("Quantitative variables: %s", ncol(numeric_data()))
+        
+      })
+      
+      output$n_cuanti <- renderText({
+
+        sprintf("Qualitative variables: %s", ncol(data_csv())-ncol(numeric_data()))
+
+      })
+      
+    }
+    
+  })
+
   # Download input
   output$downloadLink <- downloadHandler(
     filename = "info.pdf",
