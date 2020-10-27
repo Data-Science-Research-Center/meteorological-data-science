@@ -25,7 +25,6 @@ solution_area_ui<-function(id){
                   column(
                     width = 12,
                     h4("Data Viewer", style = "text-align:center"),
-                    hr(),
                     radioButtons(
                       ns("sep"), 
                       label = "Separator",
@@ -33,7 +32,7 @@ solution_area_ui<-function(id){
                         Comma = ",",
                         Semicolon = ";"),
                       selected = ",",
-                      inline = FALSE
+                      inline = TRUE
                     ),
                     fileInput(
                       inputId = ns("file_input_csv"),
@@ -43,6 +42,10 @@ solution_area_ui<-function(id){
                       buttonLabel = span(class="ti-file", style = "font-size:22pt"),
                       accept = c("text/csv","text/comma-separated-values",".csv")
                     )
+                  ),
+                  column(
+                    width = 12,
+                  h1("hola")
                   )
                 ),
                 hr(),
@@ -77,7 +80,6 @@ solution_area_ui<-function(id){
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Temporary Charts", style = "text-align:center"),
-                  hr(),
                   radioButtons(
                     inputId = ns("diagram_chart_simple"),
                     label = "Type of chart",
@@ -116,7 +118,6 @@ solution_area_ui<-function(id){
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Comparative Time Charts", style = "text-align:center"),
-                  hr(),
                   radioButtons(
                     inputId = ns("diagram_chart_multiple"),
                     label = "Type of chart",
@@ -160,7 +161,6 @@ solution_area_ui<-function(id){
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Descriptive Charts", style = "text-align:center"),
-                  hr(),
                   radioButtons(
                     inputId = ns("descriptive_chart"),
                     label = "Type of chart",
@@ -199,7 +199,6 @@ solution_area_ui<-function(id){
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Analytical results", style = "text-align:center"),
-                  hr(),
                   uiOutput(ns("select_analytic"))
                 )
               )
@@ -254,8 +253,6 @@ solution_area_ui<-function(id){
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Save Project", style = "text-align:center"),
-                  hr()
-                  
                 )
               )
             ),
@@ -771,7 +768,7 @@ solution_area_server<-function(input, output,session){
       output$uiout_ken <- renderUI({
         
         tagList(
-          h6("Pearson's Correlation Coefficient"),
+          h6("kendall's Correlation Coefficient"),
           verbatimTextOutput(ns("value_cor_ken"))
         )
         
@@ -789,7 +786,7 @@ solution_area_server<-function(input, output,session){
       output$uiout_spear <- renderUI({
         
         tagList(
-          h6("Pearson's Correlation Coefficient"),
+          h6("Spearman's Correlation Coefficient"),
           verbatimTextOutput(ns("value_cor_spear"))
         )
         

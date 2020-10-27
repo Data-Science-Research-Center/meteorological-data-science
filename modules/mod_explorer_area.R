@@ -9,8 +9,6 @@
 explorer_area_ui <- function(id) {
   ns <- NS(id)
   
-  shinyFeedback::useShinyFeedback()
-  
   material_card(
     style = "background:#ffffff",
     fluidRow(
@@ -138,12 +136,11 @@ explorer_area_server<- function(input, output, session) {
         ),
         downloadBttn(
           ns("downloadButtonFile"),
-          label = "Download",
+          label = "CSV",
           size = "xs"
         )
         
-      ),
-      hr()
+      )
     )
   })
   
