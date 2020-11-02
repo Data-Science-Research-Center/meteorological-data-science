@@ -45,10 +45,12 @@ solution_area_ui<-function(id){
                   )
                 ),
                 div(
-                  textOutput(ns("n_var")),
-                  textOutput(ns("n_registers")),
-                  textOutput(ns("n_cuali")),
-                  textOutput(ns("n_cuanti"))
+                  actionBttn(
+                    ns("data_diagnostics"), 
+                    label = "Diagnostic", 
+                    size = "xs"
+                  )
+                  
                 ),
                 hr(),
                 fluidRow(
@@ -430,6 +432,84 @@ solution_area_server<-function(input, output,session){
   
   
   # Document preprocessing
+  observeEvent(input$data_diagnostics,{
+    
+    if(is.null(input$file_input_csv)){
+      
+      return((NULL))
+      
+    }else{
+      
+      sendSweetAlert(
+        session = session,
+        title = NULL,
+        width = 300,
+        showCloseButton = TRUE,
+        btn_labels = NA,
+        text = fluidRow(
+          column(
+            width = 12,
+            style = "font-size: 10pt",
+            tagList(
+              br(),
+              h4("File diagnostic"),
+              br(),
+              p("General summary of the file to be processed.", style = "text-align:justify"),
+              br(),
+              fluidRow(
+                style = "text-align: center",
+                column(
+                  6,
+                  p("Variables:")
+                ),
+                column(
+                  6,
+                  textOutput(ns("n_var"))
+                )
+              ),
+              fluidRow(
+                style = "text-align: center",
+                column(
+                  6,
+                  p("Records:")
+                ),
+                column(
+                  6,
+                  textOutput(ns("n_registers"))
+                )
+              ),
+              fluidRow(
+                style = "text-align: center",
+                column(
+                  6,
+                  p("Quantitative:")
+                ),
+                column(
+                  6,
+                  textOutput(ns("n_cuali"))
+                )
+              ),
+              fluidRow(
+                style = "text-align: center",
+                column(
+                  6,
+                  p("Qualitative:")
+                ),
+                column(
+                  6,
+                  textOutput(ns("n_cuanti"))
+                )
+              )
+            )
+          )
+        ),
+        html = TRUE
+      )
+      
+    }
+    
+  })
+  
   observe({
     
     if(is.null(input$file_input_csv)){
@@ -440,26 +520,26 @@ solution_area_server<-function(input, output,session){
       
       output$n_var <- renderText({
         
-        sprintf("Number of variables: %s", ncol(data_csv()))
+        ncol(data_csv())
         
       })
       
       output$n_registers <- renderText({
         
-        sprintf("Number of records: %s", nrow(data_csv()))
+        nrow(data_csv())
         
       })
       
       output$n_cuali <- renderText({
         
-        sprintf("Quantitative variables: %s", ncol(numeric_data()))
+        ncol(numeric_data())
         
       })
       
       output$n_cuanti <- renderText({
-
-        sprintf("Qualitative variables: %s", ncol(data_csv())-ncol(numeric_data()))
-
+        
+        ncol(data_csv())-ncol(numeric_data())
+        
       })
       
     }

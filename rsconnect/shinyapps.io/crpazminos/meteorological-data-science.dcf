@@ -1,12 +1,12 @@
-name: Meteorological-Data-Science
-title: Meteorological-Data-Science
+name: meteorological-data-science
+title: meteorological-data-science
 username:
 account: crpazminos
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 3008199
-bundleId: 3753257
-url: https://crpazminos.shinyapps.io/Meteorological-Data-Science/
-when: 1602972308.88649
+appId: 3107018
+bundleId: 3788714
+url: https://crpazminos.shinyapps.io/meteorological-data-science/
+when: 1603820421.7113
 asMultiple: FALSE
 asStatic: FALSE
