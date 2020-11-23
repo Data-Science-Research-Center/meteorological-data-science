@@ -44,7 +44,7 @@
         <div class="container">
             <div class="navbar-header">
                 <a href="http://cided.espoch.edu.ec/" target="_blank" class="navbar-brand logo">
-                    <h5>Data Science <br> Research Group</h5>
+                    <h5>Meteorological </br> Data </br> Science</h5>
                 </a>
             </div>
             <nav class="collapse navbar-collapse" id="primary-menu">
@@ -61,16 +61,13 @@
     <!-- Mainmenu area /-->
     
     <!-- Header area -->
-    <header class="header-area full-height relative v-center sky-bg-other" id="home-page">
-        <div class="absolute anlge-bg"></div>
+    <header class="header-area full-height relative v-center sky-bg" id="home-page">
+        <div class="absolute angle-bg"></div>
         <div class="container">
             <div class="row v-center">
                 <div class="col-xs-12 col-md-7 header-text">
-                    <h2>Meteorological Data Science</h2>
-                    <p>
-                        informacion sobre algo
-                    </p>
-                    {{ header_area }}
+                    <span class="icon-cided" style="font-size: 95pt"></span>
+                    <p>We conduct, drive and share data science research.</p>
                 </div>
             </div>
         </div>
@@ -78,13 +75,13 @@
     <!-- Header area /-->
     
     <!-- Explorer area -->
-    <section class="section-padding sky-bg-other" id="explorer_area">
+    <section class="section-padding gray-bg" id="explorer_area">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 text-center">
                     <div class="page-title">
-                        <h2>Explorer</h2>
-                        <p>info about projects</p>
+                        <h2 style="font-family: 'Kanit', sans-serif;">Explorer</h2>
+                        <p style="text-align:justify">The system incorporates a set of tools for navigation in the project database, these provide basic information about the project and the data that were used in the experimentation process. In this section you can modify the information, delete the project and access the data by downloading a CSV document.</p>
                     </div>
                 </div>
             </div>
@@ -94,12 +91,12 @@
     <!-- Explorer area /-->
 
     <!-- Solution area -->
-    <section class="section-padding sky-bg " id="solution_area">
+    <section class="section-padding gray-bg " id="solution_area">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 text-center">
                     <div class="page-title">
-                        <h2>Solutions</h2>
+                        <h2 style="font-family: 'Kanit', sans-serif;">Solutions</h2>
                         <p>Select a package L</p>
                     </div>
                 </div>
@@ -110,29 +107,29 @@
     <!-- Solution area /-->
     
     <!-- Footer area -->
-    <footer class="footer-area relative sky-bg-other" id="about">
+    <footer class="footer-area relative sky-bg" id="about">
         <div class="absolute footer-bg"></div>
         <div class="footer-top">
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 text-center">
                         <div class="page-title">
-                            <h2>About this app</h2>
+                            <h2 style="font-family: 'Kanit', sans-serif;">About this app</h2>
                             <p style="text-align: left">
                                 The goal of this app is to demonstrate the development of a complete data service entirely written in the statistical programming language R. Besides this web application, the project includes the creation of a data refresh process (also written in R) that runs inside an AWS Docker container on a daily schedule. Additionally, efforts were made to develop this project in a reproducible way by controlling the operating environmentand the used R version (through Docker containers), a complete list of all required R packages and their specific versions (through <verbatim>packrat</verbatim>) with the intention to promote collaborative development and to reduce the friction of the setup process of R projects in heterogeneous development environments.
                             </p>
 
-                            <h3>App</h3>
+                            <h3 style="font-family: 'Kanit', sans-serif;">App</h3>
                             <p style="text-align: left">
                                 This web application is written using the <a href="https://shiny.rstudio.com/" target="_blank">R Shiny</a> web framework. It demonstrates the use of custom HTML templates in Shiny apps to create a fancy user experience. The theme used in this app is made by <a href="https://colorlib.com">Colorlib</a>. The was developed with best Shiny practices in mind, e.g. the use of Shiny modu les. In total about 1,100 lines of code were written for this app in less than 80 hours. This time included app ideation and all required research of data sources, data preparation and its operationalisation, app development, design and how to best present the information.
                             </p>
 
-                            <h3>Data</h3>
+                            <h3 style="font-family: 'Kanit', sans-serif;">Data</h3>
                             <p style="text-align: left">
                                 The data for this app is extracted from <a href="https://www.r-pkg.org/" target="_blank">MetaCRAN</a> which provides a database of all packages on CRAN and their publication history. The extraction processes transforms and summarises the data for efficient consumption in this app. The app's data is refreshed through a separate R process which runs daily in a Docker container on AWS. The data refresh is published in its own git repository (to be published soon).
                             </p>
 
-                            <h3>Deployment</h3>
+                            <h3 style="font-family: 'Kanit', sans-serif;">Deployment</h3>
                             <p style="text-align: left">
                                 The app is deployed through RStudio's webservice <a href="https://shinyapps.io/" target="_blank">shinyapps.io</a>. Additionally, the app is published on <a href="https://rstudio.cloud/project/258634" target="_blank">RStudio Cloud</a> which provides a complete development environment of the project.
                             </p>
@@ -146,15 +143,15 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 pull-right">
                         <ul class="social-menu text-right x-left">
-                            <!--li><a href="#"><i class="ti-facebook"></i></a></li>
+                            <li><a href="#"><i class="ti-facebook"></i></a></li>
                             <li><a href="#"><i class="ti-twitter"></i></a></li>
-                            <li><a href="#"><i class="ti-google"></i></a></li-->
+                            <li><a href="#"><i class="ti-google"></i></a></li>
                             <li><a href="https://github.com/Data-Science-Research-Center/meteorological-data-science" target="_blank"><span class="icon-github"></span> </a></li>
                         </ul>
                     </div>
-                    <div class="col-xs-12 col-sm-6">
+                     <div class="col-xs-12 col-sm-6">
                         <p>
-                            This app is open source and its code can be used freely.
+                          Discovering Knowledge
                         </p>
                     </div>
                 </div>
@@ -164,7 +161,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        <p>This template is made with <i class="ti-heart" aria-hidden="true"></i> by <a href="#">name</a></p>
+                        <p style="font-size: 8pt">Power by R and Shiny</p>
                     </div>
                 </div>
             </div>

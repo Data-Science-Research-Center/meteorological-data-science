@@ -12,15 +12,16 @@ solution_area_ui<-function(id){
   fluidRow(
     column(
       width = 12,
+      useShinyFeedback(),
       tabsetPanel(
         type = "pills",
         tabPanel( # Data Viewe - Section 1
-          "Data Viewer", 
+          "Data Viewer",
           fluidRow(
             column( 
               width = 3,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt;",
+                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt;",
                 fluidRow(
                   column(
                     width = 12,
@@ -66,7 +67,7 @@ solution_area_ui<-function(id){
             column( 
               width = 9,
               material_card(
-                style = "background:#ffffff; height:500px; color:#272829",
+                style = "background:#f9f9f9; color:#272829",
                 div(
                   style = "font-size: 8.5pt;",
                   DT::DTOutput(ns("data_from"))
@@ -81,7 +82,7 @@ solution_area_ui<-function(id){
             column(
               width = 3,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
+                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Temporary Charts", style = "text-align:center"),
                   radioButtons(
@@ -101,12 +102,11 @@ solution_area_ui<-function(id){
             column(
               width = 9,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
+                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   highchartOutput(
                     outputId = ns("ho_plot"),
-                    width = "100%",
-                    height = "480px"
+                    width = "100%"
                   )
                 )
               )
@@ -119,7 +119,7 @@ solution_area_ui<-function(id){
             column(
               width = 3,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
+                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Comparative Time Charts", style = "text-align:center"),
                   radioButtons(
@@ -139,17 +139,22 @@ solution_area_ui<-function(id){
             column(
               width = 9,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
+                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt;",
                 div(
                   highchartOutput(
                     outputId = ns("ho_plot_m"),
-                    width = "100%",
-                    height = "240px"
-                  ),
+                    width = "100%"
+                    # height = "240px"
+                  )
+                )
+              ),
+              material_card(
+                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt;",
+                div(
                   highchartOutput(
                     outputId = ns("ho_plot_m2"),
-                    width = "100%",
-                    height = "240px"
+                    width = "100%"
+                    # height = "240px"
                   )
                 )
               )
@@ -181,16 +186,16 @@ solution_area_ui<-function(id){
             ),
             column(
               width = 9,
-              material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
+              # material_card(
+              #   style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
                 div(
                   plotOutput(
                     ns("descriptive_graph"),
-                    width = "100%",
-                    height = "460px"
+                    width = "100%"
+                    # height = "460px"
                   )
                 )
-              )
+              # )
             )
           )
         ),
@@ -209,8 +214,8 @@ solution_area_ui<-function(id){
             ),
             column(
               width = 9,
-              material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt;",
+              # material_card(
+              #   style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt;",
                 div(
                   fluidRow(
                     column(
@@ -244,7 +249,7 @@ solution_area_ui<-function(id){
                   
                   )
                 )
-              )
+              # )
             )
           )
         ),
@@ -974,6 +979,7 @@ solution_area_server<-function(input, output,session){
     
     if(is.null(input$file_input_csv)){
       
+      
       return(NULL)
       
     }else{
@@ -989,24 +995,81 @@ solution_area_server<-function(input, output,session){
       p_password(input$input_password)
       
       
+      
       dat_ran(sprintf("private/data/%s.json", runif(1, min=1, max=4)))
       
       write_json(data_csv(), dat_ran())
+
+      save_result <- project_save(as.character(p_password()), 
+                   as.character(p_name()), 
+                   as.character(p_description()), 
+                   as.character(p_institution()), 
+                   as.character(p_author()), 
+                   as.character(p_date()), 
+                   as.character(dat_ran()))
       
-      result_sav <- project_save(as.character(p_password()), as.character(p_name()), as.character(p_description()), as.character(p_institution()), as.character(p_author()), as.character(p_date()), as.character(dat_ran()))
       
-      shinyjs::reset("input_name")
-      shinyjs::reset("input_institution")
-      shinyjs::reset("input_description")
-      shinyjs::reset("input_a_name")
-      shinyjs::reset("input_a_lastname")
-      shinyjs::reset("input_password")
+      
+      if(save_result == "Saved correctly"){
+        
+        sendSweetAlert(
+          session = session,
+          title = NULL,
+          width = 250,
+          showCloseButton = TRUE,
+          btn_labels = NA,
+          text = fluidRow(
+            column(
+              width = 12,
+              style = "font-size: 10pt",
+              br(),
+              span(class = "ti-check", style = "text-align:center; color: green; font-size:20pt"),
+              br(),
+              p(save_result)
+            )
+          ),
+          html = TRUE
+        )
+        session$reload()
+        
+      }else{
+        sendSweetAlert(
+          session = session,
+          title = NULL,
+          width = 250,
+          showCloseButton = TRUE,
+          btn_labels = NA,
+          text = fluidRow(
+            column(
+              width = 12,
+              style = "font-size: 10pt",
+              br(),
+              span(class = "ti-close", style = "text-align:center; color: red; font-size:20pt"),
+              br(),
+              p(save_result)
+            )
+          ),
+          html = TRUE
+        )
+      }
+      
       
     }
 
   })
   
-  
+  observeEvent(input$input_password, {
+    req(input$input_password)
+    if (nchar(input$input_password) < 5) {
+        showFeedbackWarning(
+          inputId = "input_password", 
+          text = "Very short password",
+          icon = span(class = "ti-alerta")
+        )
+    } else {
+      hideFeedback("input_password")
+    }
+  })
     
   
 

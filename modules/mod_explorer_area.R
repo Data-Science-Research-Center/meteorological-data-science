@@ -10,7 +10,8 @@ explorer_area_ui <- function(id) {
   ns <- NS(id)
   
   material_card(
-    style = "background:#ffffff",
+    style = "background:#F9F9F9",
+    useShinyFeedback(),
     fluidRow(
       column(
       width = 3,
@@ -59,6 +60,7 @@ explorer_area_server<- function(input, output, session) {
         options = list(pageLength = 15, responsive = TRUE, dom = "ftip", searching = TRUE),
         selection = list(mode = "single"),
         class = "display compact",
+        
         rownames = FALSE
       )
   })
@@ -136,7 +138,7 @@ explorer_area_server<- function(input, output, session) {
         ),
         downloadBttn(
           ns("downloadButtonFile"),
-          label = "CSV",
+          label = "Download",
           size = "xs"
         )
         
@@ -265,7 +267,7 @@ explorer_area_server<- function(input, output, session) {
   })
   
   observeEvent(input$password_delete_acept,{
-    req(selected_project())
+    req(selected_project(), input$password_delete)
     
     id_project <- selected_project()$project_db_selected$`_id`
     path_data <- selected_project()$project_db_selected$projectData                                          
@@ -280,16 +282,15 @@ explorer_area_server<- function(input, output, session) {
           select(projectName,projectDate) %>%
           rename(project = projectName, date = projectDate)
       })
-
-      output$project_table<-DT::renderDT({
-        data_all_select() %>%
-          DT::datatable(
-            options = list(pageLength = 15, responsive = TRUE, dom = "ftip"),
-            selection = list(mode = "single"),
-            class = "display compact",
-            rownames = FALSE
-          )
-      })
+      
+      session$reload()
+      
+    }else{
+      showFeedbackDanger(
+        inputId = "password_delete", 
+        text = "Incorrect password",
+        icon = span(class = "ti-alerta")
+      )
     }
   })
   
@@ -321,15 +322,13 @@ explorer_area_server<- function(input, output, session) {
       })
       
       
-      output$project_table<-DT::renderDT({
-        data_all_select() %>%
-          DT::datatable(
-            options = list(pageLength = 15, responsive = TRUE, dom = "ftip"),
-            selection = list(mode = "single"),
-            class = "display compact",
-            rownames = FALSE
-          )
-      })
+      session$reload()
+    }else{
+      showFeedbackDanger(
+        inputId = "password_edit", 
+        text = "Incorrect password",
+        icon = span(class = "ti-alerta")
+      )
     }
   })
   

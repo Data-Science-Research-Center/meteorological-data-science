@@ -21,10 +21,14 @@ CSS INDEX
 -----------------------------------------------------------------------------------*/
 
 /*-----------------
+
 1. Google font
 ------------------*/
 
-@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700');
+/*@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Goldman&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit&display=swap');
 
 /*-------------------
 2. Theme Default CSS
@@ -68,9 +72,11 @@ body {
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    /*font-family: 'Poppins', sans-serif;*/
+    /*font-family: 'Goldman', cursive;*/
+    font-family: 'IBM Plex Sans', sans-serif;
     font-weight: 400;
-    font-size: 15px;
+    font-size: 12pt;
     line-height: 1.8;
     color: #515656;
 }
@@ -160,19 +166,20 @@ input:-webkit-autofill:focus {
 }
 
 .sky-bg {
-    background: #EE2C2C;
-    background: -webkit-gradient(linear, left top, left bottom, from(#318c81), to(#30659a));
-    background: linear-gradient(to bottom, #318c81 0%, #30659a 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2e827a', endColorstr='#318c81', GradientType=0);
+    background: #6DC1DC;
+    background: -webkit-gradient(linear, left top, left bottom, from(#6DC1DC), to(#0C8ABE));
+    background: linear-gradient(to bottom, #6DC1DC 0%, #0C8ABE 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6DC1DC', endColorstr='#0C8ABE', GradientType=0);
     color: #ffffff;
 }
 
+.gray-bg{
+    background-color: #F2FDFF;
+}
+
 .sky-bg-other {
-    background: #24AAE1  ;
-    background: -webkit-gradient(linear, left top, left bottom, from(#24AAE1 ), to(#318c81));
-    background: linear-gradient(to bottom, #24AAE1   0%, #318c81 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#24AAE1  ', endColorstr='#318c81', GradientType=0);
-    color: #ffffff;
+    background: #ffffff;
+    color: #000000;
 }
 
 /**
@@ -218,12 +225,12 @@ input:-webkit-autofill:focus {
 .page-title h2 {
     text-transform: uppercase;
     position: relative;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 .page-title h2:after {
-    content: "\e675";
+    /*content: "\e675";*/
     font-family: 'themify';
     position: absolute;
     left: 50%;
@@ -351,7 +358,7 @@ input:-webkit-autofill:focus {
 
 
 .mainmenu-area.affix {
-    background: #EE2C2C; 
+    background: #0C8ABE; /*important*/
 }
 
 
@@ -360,26 +367,14 @@ input:-webkit-autofill:focus {
 *Header-area
 **/
 
-.anlge-bg {
+.angle-bg {
     background: url('images/fond_page.png') no-repeat scroll center bottom 0px / 100% auto;
-}
-
-
-.header-text h2 {
-    margin-bottom: 20px;
-    font-size: 40px;
 }
 
 .header-text .button {
     margin-top: 30px;
 }
 
-.screen-slider .item {
-    background: url('images/mobile2.png') no-repeat scroll center center / auto 100%;
-    padding: 56px 22px;
-    display: inline-block;
-    margin: auto;
-}
 
 .screen-slider.owl-carousel .owl-item {
     text-align: center
@@ -765,12 +760,12 @@ input:-webkit-autofill:focus {
     padding-top: 120px;
     z-index: 1;
 }
-/*
+
 .footer-bg {
-    background: url('images/angle-bg.png') no-repeat scroll center bottom / 100% auto;
+    background: url('images/fond_page.png') no-repeat scroll center bottom / 100% auto;
     z-index: -1;
 }
-*/
+
 .footer-top {
     margin-bottom: 150px;
 }

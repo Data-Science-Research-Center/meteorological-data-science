@@ -1,4 +1,4 @@
-################################################################################q
+################################################################################
 # Entry point of the Shiny app
 #
 # Author: Cristian Pazmiño
@@ -25,6 +25,7 @@ library(xts)
 library(fs)
 library(stats)
 library(shinyjs)
+library(shinyFeedback)
 
 # Load modules -----
 source("modules/mod_header_area.R")
