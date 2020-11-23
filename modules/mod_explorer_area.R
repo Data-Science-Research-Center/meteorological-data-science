@@ -150,14 +150,14 @@ explorer_area_server<- function(input, output, session) {
     sendSweetAlert(
       session = session,
       title = NULL,
-      width = 500,
+      width = 300,
       showCloseButton = TRUE,
       btn_labels = NA,
       text = fluidRow(
         column(
           width = 12,
           uiOutput(ns("edit_info_html")),
-          style = "font-size: 10pt"
+          style = "font-size: 9pt"
         )
       ),
       html = TRUE
@@ -175,7 +175,7 @@ explorer_area_server<- function(input, output, session) {
         column(
           width = 12,
           uiOutput(ns("delete_project_html")),
-          style = "font-size: 10pt"
+          style = "font-size: 9pt"
         )
       ),
       html = TRUE
@@ -185,27 +185,24 @@ explorer_area_server<- function(input, output, session) {
   output$edit_info_html <- renderUI({
     req(selected_project())
     tagList(
+      h4(style="font-family: 'Kanit', sans-serif;", "Update your information"),
       br(),
-      h4("Update your information"),
       fluidRow(
         style = "text-align:justify",
         column(
-          width = 6,
+          width = 12,
           textInput(
             ns("edit_projectName_pro"),
             label = "Project name",
             width = "100%",
             value = selected_project()$project_db_selected$projectName
-          ),
-          textInput(
-            ns("edit_institution_pro"),
-            label = "Institution",
-            width = "100%",
-            value = selected_project()$project_db_selected$institutionName
           )
-        ),
+        )
+      ),
+      fluidRow(
+        style = "text-align:justify",
         column(
-          width = 6,
+          width = 12,
           textAreaInput(
             inputId = ns("edit_description_pro"),
             label = "Description", 
@@ -219,8 +216,7 @@ explorer_area_server<- function(input, output, session) {
       p("Please type your project ", strong("password")," to confirm.", style = "text-align:justify"),
       fluidRow(
         column(
-          width = 6,
-          offset = 3,
+          width = 12,
           passwordInput(
             inputId = ns("password_edit"),
             label = NULL,
@@ -232,7 +228,7 @@ explorer_area_server<- function(input, output, session) {
         actionBttn(
           ns("password_edit_acept"), 
           label = "Save", 
-          size = "s"
+          size = "xs"
         )
       )
     )
@@ -241,8 +237,8 @@ explorer_area_server<- function(input, output, session) {
   output$delete_project_html <- renderUI({
     req(selected_project())
     tagList(
+      h4(style="font-family: 'Kanit', sans-serif;", "Are you sure?"),
       br(),
-      h4("Are you absolutely sure?"),
       div(
         style = "text-align:justify",
         p("This action", strong("cannot"), "be undone. 
@@ -260,7 +256,7 @@ explorer_area_server<- function(input, output, session) {
         actionBttn(
           ns("password_delete_acept"), 
           label = "Delete", 
-          size = "s",
+          size = "xs",
         )
       )
     )
@@ -300,18 +296,16 @@ explorer_area_server<- function(input, output, session) {
     if(input$edit_description_pro == ""){
       description_project <- selected_project()$project_db_selected$projectDescription
       name_project <- selected_project()$project_db_selected$projectName
-      name_institution <- selected_project()$project_db_selected$institutionName
     }else{
       description_project <- input$edit_description_pro
       name_project <- input$edit_projectName_pro
-      name_institution <- input$edit_institution_pro
     }
     
     
     id_project <- selected_project()$project_db_selected$`_id`
     pass_project <- input$password_edit
     
-    text_result <- password_edit(as.character(id_project), as.character(pass_project), as.character(description_project), as.character(name_project), as.character(name_institution))
+    text_result <- password_edit(as.character(id_project), as.character(pass_project), as.character(description_project), as.character(name_project))
     
     
     if(text_result == "Successfully edited"){

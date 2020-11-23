@@ -25,9 +25,7 @@ CSS INDEX
 1. Google font
 ------------------*/
 
-/*@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700');*/
-/*@import url('https://fonts.googleapis.com/css2?family=Goldman&display=swap');*/
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700');
 @import url('https://fonts.googleapis.com/css2?family=Kanit&display=swap');
 
 /*-------------------
@@ -72,9 +70,7 @@ body {
 }
 
 body {
-    /*font-family: 'Poppins', sans-serif;*/
-    /*font-family: 'Goldman', cursive;*/
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-weight: 400;
     font-size: 12pt;
     line-height: 1.8;
@@ -174,13 +170,9 @@ input:-webkit-autofill:focus {
 }
 
 .gray-bg{
-    background-color: #F2FDFF;
+    background-color: #FFFFFF;
 }
 
-.sky-bg-other {
-    background: #ffffff;
-    color: #000000;
-}
 
 /**
 *Default Button
@@ -368,7 +360,7 @@ input:-webkit-autofill:focus {
 **/
 
 .angle-bg {
-    background: url('images/fond_page.png') no-repeat scroll center bottom 0px / 100% auto;
+    background: url('images/fond_page.png') no-repeat scroll center bottom -120px / 100% auto;
 }
 
 .header-text .button {

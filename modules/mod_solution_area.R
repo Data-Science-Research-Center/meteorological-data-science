@@ -16,7 +16,7 @@ solution_area_ui<-function(id){
       tabsetPanel(
         type = "pills",
         tabPanel( # Data Viewe - Section 1
-          "Data Viewer",
+          h4(style="font-family: 'Kanit', sans-serif; font-weight: normal","Data Viewer"),
           fluidRow(
             column( 
               width = 3,
@@ -25,7 +25,8 @@ solution_area_ui<-function(id){
                 fluidRow(
                   column(
                     width = 12,
-                    h4("Data Viewer", style = "text-align:center"),
+                    h4("Data Viewer", style = "text-align:center; font-family: 'Kanit', sans-serif"),
+                    br(),
                     radioButtons(
                       ns("sep"), 
                       label = "Separator",
@@ -77,7 +78,7 @@ solution_area_ui<-function(id){
           )
         ),
         tabPanel( # Temporary Charts - Section 2
-          "Temporary Charts",  
+          h4(style="font-family: 'Kanit', sans-serif; font-weight: normal","Temporary Charts"),  
           fluidRow(
             column(
               width = 3,
@@ -114,7 +115,7 @@ solution_area_ui<-function(id){
           )
         ),
         tabPanel( # Comparative Time Charts - Section 3
-          "Comparative Charts", 
+          h4(style="font-family: 'Kanit', sans-serif; font-weight: normal","Comparative Charts"), 
           fluidRow(
             column(
               width = 3,
@@ -162,7 +163,7 @@ solution_area_ui<-function(id){
           )
         ),
         tabPanel( # Descriptive Charts - Section 4
-          "Descriptive Charts", 
+          h4(style="font-family: 'Kanit', sans-serif; font-weight: normal","Descriptive Charts"), 
           fluidRow(
             column(
               width = 3,
@@ -186,21 +187,17 @@ solution_area_ui<-function(id){
             ),
             column(
               width = 9,
-              # material_card(
-              #   style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt; height:500px",
                 div(
                   plotOutput(
                     ns("descriptive_graph"),
                     width = "100%"
-                    # height = "460px"
                   )
                 )
-              # )
             )
           )
         ),
         tabPanel( # Analytical results - Section 5
-          "Analytical results", 
+          h4(style="font-family: 'Kanit', sans-serif; font-weight: normal","Analytical results"), 
           fluidRow(
             column(
               width = 3,
@@ -214,8 +211,6 @@ solution_area_ui<-function(id){
             ),
             column(
               width = 9,
-              # material_card(
-              #   style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt;",
                 div(
                   fluidRow(
                     column(
@@ -254,7 +249,7 @@ solution_area_ui<-function(id){
           )
         ),
         tabPanel( # Save Project - Section 6
-          "Save Project", 
+          h4(style="font-family: 'Kanit', sans-serif; font-weight: normal","Save Project"), 
           fluidRow(
             column(
               width = 3,
@@ -456,96 +451,21 @@ solution_area_server<-function(input, output,session){
             width = 12,
             style = "font-size: 10pt",
             tagList(
-              br(),
-              h4("File diagnostic"),
+              h4(style="font-family: 'Kanit', sans-serif;","File diagnostic"),
               br(),
               p("General summary of the file to be processed.", style = "text-align:justify"),
-              br(),
-              fluidRow(
-                style = "text-align: center",
-                column(
-                  6,
-                  p("Variables:")
-                ),
-                column(
-                  6,
-                  textOutput(ns("n_var"))
-                )
-              ),
-              fluidRow(
-                style = "text-align: center",
-                column(
-                  6,
-                  p("Records:")
-                ),
-                column(
-                  6,
-                  textOutput(ns("n_registers"))
-                )
-              ),
-              fluidRow(
-                style = "text-align: center",
-                column(
-                  6,
-                  p("Quantitative:")
-                ),
-                column(
-                  6,
-                  textOutput(ns("n_cuali"))
-                )
-              ),
-              fluidRow(
-                style = "text-align: center",
-                column(
-                  6,
-                  p("Qualitative:")
-                ),
-                column(
-                  6,
-                  textOutput(ns("n_cuanti"))
-                )
+              div(
+                style = "text-align:justify",
+                p(sprintf("Variables: %s",ncol(data_csv()))),
+                p(sprintf("Records: %s",nrow(data_csv()))),
+                p(sprintf("Quantitative: %s",ncol(numeric_data()))),
+                p(sprintf("Qualitative: %s",ncol(data_csv())-ncol(numeric_data()))),
               )
             )
           )
         ),
         html = TRUE
       )
-      
-    }
-    
-  })
-  
-  observe({
-    
-    if(is.null(input$file_input_csv)){
-      
-      return((NULL))
-      
-    }else{
-      
-      output$n_var <- renderText({
-        
-        ncol(data_csv())
-        
-      })
-      
-      output$n_registers <- renderText({
-        
-        nrow(data_csv())
-        
-      })
-      
-      output$n_cuali <- renderText({
-        
-        ncol(numeric_data())
-        
-      })
-      
-      output$n_cuanti <- renderText({
-        
-        ncol(data_csv())-ncol(numeric_data())
-        
-      })
       
     }
     

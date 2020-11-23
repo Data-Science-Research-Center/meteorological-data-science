@@ -1,0 +1,99 @@
+/ * Diseño medio: 1280px. * /
+
+@media  solo pantalla y ( ancho mínimo : 992 px ) y ( ancho máximo : 1200 px ) {}
+
+
+/ * Diseño de tableta: 768px. * /
+
+@media  solo pantalla y ( ancho mínimo : 768 px ) y ( ancho máximo : 991 px ) {
+    . mainmenu-area  # primary-menu  >  ul  >  li  >  a {
+        relleno : 30 px  12 px ;
+    }
+    . header-area {
+        padding-top : 80 px ;
+    }
+    . tabla de precios ,
+    . caja {
+        relleno : 30 px  15 px ;
+    }
+    . tabla de precios . activo {
+        relleno : 50 px  15 px ;
+    }
+    . equipo único {
+        margen inferior : 30 px
+    }
+    . side-icon-boxes {
+        pantalla : -webkit-box;
+        pantalla : -ms-flexbox;
+        pantalla : flex;
+        -ms-flex-wrap : nowrap;
+        envoltura flexible : nowrap;
+        -webkit-box-pack : justificar;
+        -ms-flex-pack : justificar;
+        justificar-contenido : espacio-entre;
+    }
+}
+
+
+/ * Diseño móvil: 320px. * /
+
+@media  solo pantalla y ( ancho máximo : 767 px ) {
+    cuerpo {
+        tamaño de fuente : 13 px ;
+    }
+    . header-area {
+        acolchado superior : 120 px ;
+        fondo de relleno : 100 px ;
+        altura : auto;
+    }
+    . título de la página  h2 ,
+    . header-text  h2 {
+        tamaño de fuente : 20 px ;
+    }
+    . área del menú principal . navbar-toggle {
+        margen superior : 20 px ;
+    }
+    . área del menú principal . navbar-toggle . icon-bar {
+        color de fondo : # ffffff ;
+    }
+    . mainmenu-area  # primary-menu {
+        color de fondo : # 138FC2 ;
+    }
+    . mainmenu-area  # primary-menu  ul {
+        desbordamiento-y : automático;
+        altura máxima : 70 vh ;
+        margen : 0 ;
+    }
+    . mainmenu-area  # primary-menu  >  ul  >  li  >  a {
+        relleno : 15 px ;
+        desbordamiento : oculto;
+    }
+    . caja {
+        relleno : 30 px  15 px ;
+    }
+    . caja . box-icon {
+        altura : auto;
+    }
+    . un solo blog ,
+    . un solo equipo ,
+    . tabla de precios . activo {
+        margen superior : 30 px ;
+    }
+    . formulario-doble  entrada {
+        ancho : 100 % ;
+    }
+    . footer-top {
+        margen inferior : 50 px ;
+    }
+    . x-left {
+        alineación de texto : izquierda;
+    }
+    . área del menú principal . logo {
+        margen izquierdo : 15 px ;
+    }
+}
+
+
+/ * Diseño móvil ancho: 480px. * /
+
+@media  solo pantalla y ( ancho mínimo : 480 px ) y ( ancho máximo : 767 px ) {}

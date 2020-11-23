@@ -32,18 +32,31 @@
     <!-- Main-Stylesheets -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href = " css/responsive.css ">
     <!-- Main-Stylesheets /-->
     
     
 </head>
 
 <body data-spy="scroll" data-target="#primary-menu">
-    
+    <div class="preloader">
+        <div class="sk-folding-cube">
+            <div class="sk-cube1 sk-cube"></div>
+            <div class="sk-cube2 sk-cube"></div>
+            <div class="sk-cube4 sk-cube"></div>
+            <div class="sk-cube3 sk-cube"></div>
+        </div>
+    </div>
     <!-- Mainmenu area -->
     <div class="mainmenu-area" data-spy="affix" data-offset-top="100">
         <div class="container">
             <div class="navbar-header">
-                <a href="http://cided.espoch.edu.ec/" target="_blank" class="navbar-brand logo">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#primary-menu">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="#home-page" class="navbar-brand logo">
                     <h5>Meteorological </br> Data </br> Science</h5>
                 </a>
             </div>
@@ -51,7 +64,6 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#home-page">Home</a></li>
                     <li><a href="#explorer_area">Explorer</a></li>
-                    <!--<li><a href="#featured-pkgs">Featured</a></li>-->
                     <li><a href="#solution_area">Solutions</a></li>
                     <li><a href="#about">About</a></li>
                 </ul>
@@ -66,8 +78,10 @@
         <div class="container">
             <div class="row v-center">
                 <div class="col-xs-12 col-md-7 header-text">
-                    <span class="icon-cided" style="font-size: 95pt"></span>
-                    <p>We conduct, drive and share data science research.</p>
+                    <a href="http://cided.espoch.edu.ec/" target="_blank">
+                    <span class="icon-cided" style="font-size: 120pt"></span>
+                    </a>
+                    <p>Driving data science research.</p>
                 </div>
             </div>
         </div>
