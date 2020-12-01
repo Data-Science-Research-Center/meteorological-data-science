@@ -8,11 +8,11 @@
 # Solution area UI -----
 solution_area_ui<-function(id){
   ns <- NS(id)
-  
   fluidRow(
     column(
       width = 12,
       useShinyFeedback(),
+      tags$style(HTML(".input_name{height:10px;}")),
       tabsetPanel(
         type = "pills",
         tabPanel( # Data Viewe - Section 1
@@ -41,7 +41,7 @@ solution_area_ui<-function(id){
                       width = "100%",
                       label = "Document",
                       multiple = TRUE,
-                      buttonLabel = span(class="ti-file", style = "font-size:22pt"),
+                      buttonLabel = span(class="ti-file", style = "font-size:21pt"),
                       accept = c("text/csv","text/comma-separated-values",".csv")
                     )
                   )
@@ -255,15 +255,6 @@ solution_area_ui<-function(id){
         tabPanel( # Save Project - Section 6
           h4(style="font-family: 'Kanit', sans-serif; font-weight: normal","Save Project"), 
           fluidRow(
-            column(
-              width = 3,
-              material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
-                div(
-                  h4("Save Project", style = "text-align:center; font-family: 'Kanit', sans-serif"),
-                )
-              )
-            ),
             column(
               width = 9,
               material_card(
