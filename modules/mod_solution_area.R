@@ -85,7 +85,8 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt",
                 div(
-                  h4("Temporary Charts", style = "text-align:center"),
+                  h4("Temporary Charts", style = "text-align:center; font-family: 'Kanit', sans-serif"),
+                  br(),
                   radioButtons(
                     inputId = ns("diagram_chart_simple"),
                     label = "Type of chart",
@@ -122,7 +123,8 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt",
                 div(
-                  h4("Comparative Time Charts", style = "text-align:center"),
+                  h4("Comparative Time Charts", style = "text-align:center; font-family: 'Kanit', sans-serif"),
+                  br(),
                   radioButtons(
                     inputId = ns("diagram_chart_multiple"),
                     label = "Type of chart",
@@ -170,7 +172,8 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
-                  h4("Descriptive Charts", style = "text-align:center"),
+                  h4("Descriptive Charts", style = "text-align:center; font-family: 'Kanit', sans-serif"),
+                  br(),
                   radioButtons(
                     inputId = ns("descriptive_chart"),
                     label = "Type of chart",
@@ -204,7 +207,8 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
-                  h4("Analytical results", style = "text-align:center"),
+                  h4("Analytical results", style = "text-align:center; font-family: 'Kanit', sans-serif"),
+                  br(),
                   uiOutput(ns("select_analytic"))
                 )
               )
@@ -256,7 +260,7 @@ solution_area_ui<-function(id){
               material_card(
                 style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
-                  h4("Save Project", style = "text-align:center"),
+                  h4("Save Project", style = "text-align:center; font-family: 'Kanit', sans-serif"),
                 )
               )
             ),
@@ -454,6 +458,7 @@ solution_area_server<-function(input, output,session){
               h4(style="font-family: 'Kanit', sans-serif;","File diagnostic"),
               br(),
               p("General summary of the file to be processed.", style = "text-align:justify"),
+              br(),
               div(
                 style = "text-align:justify",
                 p(sprintf("Variables: %s",ncol(data_csv()))),
