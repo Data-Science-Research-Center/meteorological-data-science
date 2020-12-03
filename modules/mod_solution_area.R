@@ -12,9 +12,8 @@ solution_area_ui<-function(id){
     column(
       width = 12,
       useShinyFeedback(),
-      tags$style(HTML(".input_name{height:10px;}")),
       tabsetPanel(
-        type = "pills",
+        type = "tabs",
         tabPanel( # Data Viewe - Section 1
           h4(style="font-family: 'Kanit', sans-serif; font-weight: normal","Data Viewer"),
           fluidRow(
@@ -67,8 +66,9 @@ solution_area_ui<-function(id){
             ),
             column( 
               width = 9,
-              material_card(
-                style = "background:#f9f9f9; color:#272829",
+              # material_card(
+              div(
+                style = "background:#ffffff; color:#272829",
                 div(
                   style = "font-size: 8.5pt;",
                   DT::DTOutput(ns("data_from"))
@@ -103,8 +103,8 @@ solution_area_ui<-function(id){
             ),
             column(
               width = 9,
-              material_card(
-                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt",
+              div(
+                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   highchartOutput(
                     outputId = ns("ho_plot"),
@@ -141,24 +141,16 @@ solution_area_ui<-function(id){
             ),
             column(
               width = 9,
-              material_card(
-                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt;",
-                div(
-                  highchartOutput(
-                    outputId = ns("ho_plot_m"),
-                    width = "100%"
-                    # height = "240px"
-                  )
+              div(
+                highchartOutput(
+                  outputId = ns("ho_plot_m"),
+                  width = "100%"
                 )
               ),
-              material_card(
-                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt;",
-                div(
-                  highchartOutput(
-                    outputId = ns("ho_plot_m2"),
-                    width = "100%"
-                    # height = "240px"
-                  )
+              div(
+                highchartOutput(
+                  outputId = ns("ho_plot_m2"),
+                  width = "100%"
                 )
               )
             )
@@ -170,7 +162,7 @@ solution_area_ui<-function(id){
             column(
               width = 3,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
+                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Descriptive Charts", style = "text-align:center; font-family: 'Kanit', sans-serif"),
                   br(),
@@ -205,7 +197,7 @@ solution_area_ui<-function(id){
             column(
               width = 3,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt",
+                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt",
                 div(
                   h4("Analytical results", style = "text-align:center; font-family: 'Kanit', sans-serif"),
                   br(),
@@ -248,7 +240,6 @@ solution_area_ui<-function(id){
                   
                   )
                 )
-              # )
             )
           )
         ),
@@ -256,13 +247,11 @@ solution_area_ui<-function(id){
           h4(style="font-family: 'Kanit', sans-serif; font-weight: normal","Save Project"), 
           fluidRow(
             column(
-              width = 9,
+              width = 6,
+              offset = 3,
               material_card(
-                style = "background:#ffffff; text-align: justify; color:#272829; font-size:9pt;",
-                div(
-                  h4("Save Project"),
-                  p("dfsdfsfsdf")
-                ),
+                style = "background:#f9f9f9; text-align: justify; color:#272829; font-size:9pt;",
+                h4("Save Project"),
                 br(),
                 div(
                   fluidRow(
@@ -286,7 +275,7 @@ solution_area_ui<-function(id){
                         label = NULL,
                         placeholder = "Project description",
                         width = "100%",
-                        height = "150px",
+                        height = "100px",
                         resize = "none"
                       )
                       
@@ -790,6 +779,7 @@ solution_area_server<-function(input, output,session){
       output$uiout_pear <- renderUI({
         
         tagList(
+          br(),
           h6("Pearson's Correlation Coefficient"),
           verbatimTextOutput(ns("value_cor_pear"))
         )
@@ -809,6 +799,7 @@ solution_area_server<-function(input, output,session){
       output$uiout_ken <- renderUI({
         
         tagList(
+          br(),
           h6("kendall's Correlation Coefficient"),
           verbatimTextOutput(ns("value_cor_ken"))
         )
