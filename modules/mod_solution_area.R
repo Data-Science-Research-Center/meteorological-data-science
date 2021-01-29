@@ -309,6 +309,7 @@ solution_area_ui<-function(id){
                         placeholder = "Password",
                         width = "100%",
                       ),
+                      br(),
                       actionBttn(
                         ns("save_project"), 
                         label = "Save", 

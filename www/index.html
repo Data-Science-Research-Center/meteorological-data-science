@@ -89,12 +89,12 @@
     <!-- Header area /-->
     
     <!-- Explorer area -->
-    <section class="section-padding gray-bg" id="explorer_area">
+    <section class="section-padding blue-bg" id="explorer_area">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 text-center">
                     <div class="page-title">
-                        <h2 style="font-family: 'Kanit', sans-serif;">Explorer</h2>
+                        <h2 style="font-family: 'Kanit', sans-serif">Explorer</h2>
                         <p style="text-align:justify">The system incorporates a set of tools for navigation in the project database, these provide basic information about the project and the data that were used in the experimentation process. In this section you can modify the information, delete the project and access the data by downloading a CSV document.</p>
                     </div>
                 </div>
@@ -105,13 +105,13 @@
     <!-- Explorer area /-->
 
     <!-- Solution area -->
-    <section class="section-padding gray-bg " id="solution_area">
+    <section class="section-padding blue-bg " id="solution_area">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 text-center">
                     <div class="page-title">
                         <h2 style="font-family: 'Kanit', sans-serif;">Solutions</h2>
-                        <p>Select a package L</p>
+                        <p style="text-align:justify">The system is oriented to the statistical representation of time series, for this it incorporates several tools such as the file viewer that allows you to view and modify the records, time series plotter, descriptive graphics and fundamental statistical calculations.</p>
                     </div>
                 </div>
             </div>
@@ -129,23 +129,15 @@
                     <div class="col-xs-12 col-sm-12 text-center">
                         <div class="page-title">
                             <h2 style="font-family: 'Kanit', sans-serif;">About this app</h2>
-                            <p style="text-align: left">
-                                The goal of this app is to demonstrate the development of a complete data service entirely written in the statistical programming language R. Besides this web application, the project includes the creation of a data refresh process (also written in R) that runs inside an AWS Docker container on a daily schedule. Additionally, efforts were made to develop this project in a reproducible way by controlling the operating environmentand the used R version (through Docker containers), a complete list of all required R packages and their specific versions (through <verbatim>packrat</verbatim>) with the intention to promote collaborative development and to reduce the friction of the setup process of R projects in heterogeneous development environments.
+                            <p style="text-align: justify">
+                              The objective of this system is to demonstrate the application of the statistical programming language R in computer solutions applied to time series statistics. In addition to this web system, the project includes project management, file manipulation, and results experimentation.
+The project uses a modular structure that benefits the understanding and scalability of new functionalities that can be added later.
                             </p>
 
                             <h3 style="font-family: 'Kanit', sans-serif;">App</h3>
-                            <p style="text-align: left">
-                                This web application is written using the <a href="https://shiny.rstudio.com/" target="_blank">R Shiny</a> web framework. It demonstrates the use of custom HTML templates in Shiny apps to create a fancy user experience. The theme used in this app is made by <a href="https://colorlib.com">Colorlib</a>. The was developed with best Shiny practices in mind, e.g. the use of Shiny modu les. In total about 1,100 lines of code were written for this app in less than 80 hours. This time included app ideation and all required research of data sources, data preparation and its operationalisation, app development, design and how to best present the information.
-                            </p>
-
-                            <h3 style="font-family: 'Kanit', sans-serif;">Data</h3>
-                            <p style="text-align: left">
-                                The data for this app is extracted from <a href="https://www.r-pkg.org/" target="_blank">MetaCRAN</a> which provides a database of all packages on CRAN and their publication history. The extraction processes transforms and summarises the data for efficient consumption in this app. The app's data is refreshed through a separate R process which runs daily in a Docker container on AWS. The data refresh is published in its own git repository (to be published soon).
-                            </p>
-
-                            <h3 style="font-family: 'Kanit', sans-serif;">Deployment</h3>
-                            <p style="text-align: left">
-                                The app is deployed through RStudio's webservice <a href="https://shinyapps.io/" target="_blank">shinyapps.io</a>. Additionally, the app is published on <a href="https://rstudio.cloud/project/258634" target="_blank">RStudio Cloud</a> which provides a complete development environment of the project.
+                            <p style="text-align: justify">
+                                The web system is written using the <a href="https://shiny.rstudio.com/" target="_blank">R Shiny</a> web development framework and demonstrates the use of HTML templates to customize and stylize the user interface.
+                                The app is deployed through RStudio's webservice <a href="https://shinyapps.io/" target="_blank">shinyapps.io </a>. Additionally, the project is uploaded in the remote versioning service GitHub
                             </p>
                         </div>
                     </div>
@@ -157,9 +149,9 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 pull-right">
                         <ul class="social-menu text-right x-left">
-                            <li><a href="#"><i class="ti-facebook"></i></a></li>
+                            <!-- <li><a href="#"><i class="ti-facebook"></i></a></li>
                             <li><a href="#"><i class="ti-twitter"></i></a></li>
-                            <li><a href="#"><i class="ti-google"></i></a></li>
+                            <li><a href="#"><i class="ti-google"></i></a></li> -->
                             <li><a href="https://github.com/Data-Science-Research-Center/meteorological-data-science" target="_blank"><span class="icon-github"></span> </a></li>
                         </ul>
                     </div>
